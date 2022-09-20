@@ -81,7 +81,7 @@ sh makeall_datahandling.sh
 This tests all the R code, compiles lecture_summaries as html (`materials/lecture_summaries/html`) and pdf (`materials/lecture_summaries/pdf`), slides as html/ioslides (`materials/slides/html`), and outputs the sourcecode of code examples in the lecture_summaries to an R script (`materials/sourcecode`).
 
 
-# Error messages
+## Error messages
 
 In case you are confronted with an error message of the type "pandoc document conversion failed" and you still see a tex file that is generated before the knitting process stopped, then do the following: open the tex file in RStudio, run it and install the latex packages that are suggested.
 
