@@ -1,0 +1,412 @@
+---
+title: 'Data Handling: Import, Cleaning and Visualisation'
+subtitle: 'Lecture 1 :<br>Introduction'
+author: "Prof. Dr. Ulrich Matter"
+output:   
+  ioslides_presentation:
+    css: ../../style/ioslides_white.css
+    template: ../../style/nologo_template.html
+logo: ../../img/logo.png
+bibliography: ../../references/datahandling.bib
+---
+
+
+
+```{r set-options, echo=FALSE, cache=FALSE, warning=FALSE}
+options(width = 100)
+library(knitr)
+```
+
+## Welcome to Data Handling 2022!
+
+- Go to this page (or use the QR code): https://bit.ly/datahandling-2022
+- Use one row to respond to the questions in the column headers (see the first two rows for examples).
+
+```{r , echo=FALSE, out.width = "35%", fig.align='center', purl=FALSE}
+include_graphics("../../img/bit.ly_datahandling-2022.png")
+```
+
+
+---
+
+```{r blackbox, echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/cpu_blackbox_white.png")
+```
+
+---
+
+
+```{r , echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/ds1.png")
+```
+
+---
+
+
+```{r , echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/ds2.png")
+```
+
+---
+
+```{r , echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/ds3.png")
+```
+
+---
+
+```{r , echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/ds4.png")
+```
+
+---
+
+```{r , echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/ds5.png")
+```
+
+---
+
+```{r , echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/ds6.png")
+```
+
+---
+
+```{r , echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/ds7.png")
+```
+
+---
+
+```{r , echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/ds8.png")
+```
+
+---
+
+```{r , echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/ds9.png")
+```
+
+---
+
+```{r , echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/ds10.png")
+```
+
+---
+
+```{r , echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/ds11.png")
+```
+
+---
+
+```{r , echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/ds12.png")
+```
+
+---
+
+
+
+```{r , echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/ds13.png")
+```
+
+---
+
+```{r , echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/ds14.png")
+```
+
+---
+
+```{r , echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/data_science_pipeline.png")
+```
+
+
+# Background
+
+
+## 'Data Science'?
+
+*"This coupling of scientific discovery and practice involves the collection, management, processing, analysis, visualization, and interpretation of vast amounts of heterogeneous data associated with a diverse array of scientific, translational, and inter-disciplinary applications."*
+
+University of Michigan 'Data Science Initiative', 2015
+
+
+## But, what about statistics?!
+
+*"Seemingly, statistics is being marginalized here; the implicit message is that statistics is a part of what goes on in data science but not a very big part. At the same time, many of the concrete descriptions of what the DSI will actually do will seem to statisticians to be bread-and-butter statistics. Statistics is apparently the word that dare not speak its name in connection with such an initiative!"*
+
+David Donoho (2015). __50 years of Data Science__
+
+
+## What's new about all this?
+
+*"All in all, I have come to feel that my central interest is in data analysis, which I take to include, among other things: ..."*
+
+## What's new about all this?
+
+*"All in all, I have come to feel that my central interest is in data analysis, which I take to include, among other things: procedures for analyzing data, techniques for interpreting the results of such procedures, ways of planning the gathering of data to make its analysis easier, more precise or more accurate, and all the machinery and results of (mathematical) statistics which apply to analyzing data."*
+
+## What's new about all this?
+
+```{r tukey1, echo=FALSE, out.width = "40%", fig.align='center', purl=FALSE}
+include_graphics("../../img/tukey.jpg")
+```
+<center>
+John Tukey (_The Future of Data Analysis_, 1962!)
+</center>
+
+
+
+## Technological change
+
+
+```{r computers, echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/computers.jpg")
+```
+
+
+## Relevance for modern economic research
+
+```{r css, echo=FALSE, out.width = "90%", fig.align='center',  purl=FALSE}
+include_graphics("../../img/css.png")
+```
+
+
+## Relevance for modern economic research
+
+```{r internet, echo=FALSE, out.width = "90%", fig.align='center',  purl=FALSE}
+include_graphics("../../img/internet.png")
+```
+
+
+## Relevance for modern economic research
+
+```{r bigdata, echo=FALSE, out.width = "90%", fig.align='center',  purl=FALSE}
+include_graphics("../../img/bigdata.png")
+```
+
+
+## Relevance for modern economic research
+
+```{r text, echo=FALSE, out.width = "90%", fig.align='center',  purl=FALSE}
+include_graphics("../../img/text.png")
+```
+
+
+
+
+## Data science in economics skill set
+
+
+```{r venn, echo=FALSE, out.width = "60%", fig.align='center',  purl=FALSE}
+include_graphics("../../img/venn_diagramm.png")
+```
+
+
+
+
+
+# Organisation of the Course
+
+
+## Our Team - At Your Service
+
+
+|   |   |   |
+|:-:|:-:|:-:|
+| ![](https://tools.unisg.ch/handlers/Public/PortraitStreamer.ashx?HSGEntitiyId=2e198ce8-8565-43ec-b8c4-e6e1cfae6f87) | ![](https://tools.unisg.ch/handlers/Public/PortraitStreamer.ashx?HSGEntitiyId=d0452b11-ec1a-4445-9caf-d8d6771d2fc9)| ![](../../img/u_matter.jpg) | 
+|  Aurélien Sallin  | Michael Tüting | Ulrich Matter  |
+
+
+## Introduction: Ulrich Matter
+
+- 2017-today: Assistant Professor of Economics, University of St.Gallen
+- 2021-today: Guest Lecturer (Applied Data Science), University of Lucerne
+
+Previously: 
+
+<img src="../../img/unibas.jpg" height="90"/>
+<img src="../../img/sbs_logo.png" height="90"/>
+<img src="../../img/berkman_logo.png" height="90"/>
+
+
+## Introduction: Ulrich Matter
+
+Research:
+- Media Economics and Political Economy
+- *Can the personalization of Google search results lead to political polarization?*
+- *Does YouTube's recommender algorithm lead to radicalization?*
+- *Do politicians vote in the interest of money donors when voters are distracted?*
+
+
+## Introduction: Ulrich Matter
+
+Research:
+- Media Economics and Political Economy
+- *Can the personalization of Google search results lead to political polarization?*
+- *Does YouTube's recommender algorithm lead to radicalization?*
+- *Do politicians vote in the interest of money donors when voters are distracted?*
+
+Teaching:
+- Well, this course...
+- Big Data Analytics (Master)
+- Introduction to Web Mining (Master)
+
+
+
+# Course Structure
+
+
+## Course concept: lectures
+
+- Lectures (Thursday morning)
+    - Background/Concepts
+    - Illustration concepts
+    - Illustration of 'hands-on' approaches
+
+## Course concept: special lectures
+
+- *27.10.2022: Research insights*
+    - Ulrich Matter: Web Data
+    - Aurélien Sallin: Text as Data
+    - Michael Tüting: Images as Data
+
+
+
+## 24/11/2022: Guest lecture: Economic Data Science, SNB
+
+
+
+|   |   |   |
+|:-:|:-:|:-:|
+| ![](../../img/gum.jpg) | ![](../../img/helie.jpg)| 
+|  Dr. Matthias Gubler  | Dr. Helge Liebert | 
+|  Head of Economic Data Science, SNB
+Swiss National Bank | Economist, SNB | 
+
+
+
+
+
+## Course concept: exercises
+
+- Exercise sheets (handed out every other week)
+  - Some conceptual questions
+  - Hands-on exercises/tutorials in R
+  - Detailed solution videos
+  - *First Exercises (set up R/RStudio) is available on StudyNet/Canvas today*
+
+
+
+
+## Course concept
+
+- Learning mode in this course: Prepare with reading, visit the lecture, recap key concepts in lecture notes (self-study), work on exercises, watch solution video, come to exercise session, repeat...
+
+- Strongly encouraged: (virtual) learning groups!
+    - Biweekly exercises provide opportunity.
+    - Tackle the tricky exercises together!
+
+
+## Course concept: exercise sessions
+
+- In-class exercise sessions (bi-weekly evening sessions)
+    - Discussion of exercises and additional input 
+    - Recap of concepts
+    - Q&A, support
+    - time for more coding!
+
+
+
+
+
+## Part I: Data (Science) fundamentals {.smaller}
+
+```{r echo = FALSE, warning=FALSE}
+library(readxl)
+library(knitr)
+library(magrittr)
+library(kableExtra)
+
+sched <- read_xlsx("../../../admin/2022/schedule.xlsx", col_types = "text")
+
+kable(sched[1:9, c(1,5)], format = "markdown")
+```
+
+
+## Part II: Data gathering and preparation {.smaller}
+
+```{r echo = FALSE}
+kable(sched[12:15, c(1,5)], format = "markdown") 
+```
+
+
+## Part III: Analysis, visualisation, output {.smaller}
+
+```{r echo = FALSE}
+kable(sched[16:nrow(sched), c(1,5)], format = "markdown") 
+```
+
+
+
+
+
+
+## Core course resources
+
+- All information and materials (notes, slides, course sheet, syllabus, etc.) are available on StudyNet/Canvas.
+- Core materials will also be made available on Nuvolos.
+
+
+## Main textbooks
+
+[Data Handling Book](https://umatter.github.io/datahandling/)
+
+[Murrell, Paul (2009). *Introduction to Data Technologies*, London: Chapman & Hall/CRC.](https://www.stat.auckland.ac.nz/~paul/ItDT/)
+
+[Wickham, Hadley and Garred Grolemund (2017). *R for Data Science*, 1st Edition. Sebastopol, CA: O’Reilly.](http://r4ds.had.co.nz/)
+
+
+## Further resources
+
+- [Stackoverflow](https://stackoverflow.com/questions)
+- [Get inspired in the R blogsphere](https://www.r-bloggers.com)
+
+
+## Exam information
+- Central, written examination: *digital, BYOD!*, we will have an instructional session by the head of the digital examinations team (data TBD).
+- Multiple choice questions.
+- A few open questions.
+- Theoretical concepts and practical applications in R (questions based on code examples).
+
+
+## Exam information II
+- We will release samples of  multiple choice questions via Quizzes on Canvas/Studynet (exact same format and style of exam questions).
+- Exchange students who need to take the exam before the central exam block:
+    - Date, time place, : *22.12.2022, 16:15-18:00, room 01-013*.
+    - Questions: *michael.tueting@unisg.ch*
+
+    
+
+
+
+
+
+# Q&A
+
+
+<style>
+slides > slide { overflow: scroll; }
+slides > slide:not(.nobackground):after {
+  content: '';
+}
+</style>
+
+## References {.smaller}
