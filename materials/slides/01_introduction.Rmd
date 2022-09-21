@@ -239,25 +239,21 @@ Previously:
 
 ## Introduction: Ulrich Matter
 
-Research:
-- Media Economics and Political Economy
-- *Can the personalization of Google search results lead to political polarization?*
-- *Does YouTube's recommender algorithm lead to radicalization?*
-- *Do politicians vote in the interest of money donors when voters are distracted?*
+*Research:*
+
+ - Can the personalization of Google search results lead to political     polarization?
+ - Does YouTube's recommender algorithm lead to radicalization?
+ - Do politicians vote in the interest of money donors when voters are distracted?
 
 
 ## Introduction: Ulrich Matter
 
-Research:
-- Media Economics and Political Economy
-- *Can the personalization of Google search results lead to political polarization?*
-- *Does YouTube's recommender algorithm lead to radicalization?*
-- *Do politicians vote in the interest of money donors when voters are distracted?*
+*Teaching:*
 
-Teaching:
-- Well, this course...
-- Big Data Analytics (Master)
-- Introduction to Web Mining (Master)
+ - Well, this course...
+ - Big Data Analytics (Master)
+ - Introduction to Web Mining (Master)
+ - Economics in Practice (Master)
 
 
 
@@ -367,7 +363,7 @@ kable(sched[16:nrow(sched), c(1,5)], format = "markdown")
 
 ## Main textbooks
 
-[Data Handling Book](https://umatter.github.io/datahandling/)
+[Data Handling Pocket Reference](https://umatter.github.io/datahandling/)
 
 [Murrell, Paul (2009). *Introduction to Data Technologies*, London: Chapman & Hall/CRC.](https://www.stat.auckland.ac.nz/~paul/ItDT/)
 
@@ -395,6 +391,9 @@ kable(sched[16:nrow(sched), c(1,5)], format = "markdown")
 
     
 
+## And now this...
+
+![](../../img/ds_matrix.png)
 
 
 
