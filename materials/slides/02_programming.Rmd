@@ -1,0 +1,326 @@
+---
+title: 'Data Handling'
+subtitle: 'Lecture 2:<br>Programming with Data'
+author: "Prof. Dr. Ulrich Matter"
+output:   
+  ioslides_presentation:
+    css: ../../style/ioslides.css
+    template: ../../style/nologo_template.html
+    mathjax: "default"
+logo: ../../img/logo.png
+bibliography: ../../references/datahandling.bib
+---
+
+
+
+```{r set-options, echo=FALSE, cache=FALSE, warning=FALSE}
+options(width = 100)
+library(knitr)
+```
+
+
+<style>
+pre {
+  font-size: 21px;
+}
+slides>slide.title-slide {
+    background-image: url('../../../img/programming_cover.jpg');
+    background-size: 100% 100%;
+}
+
+h4 {
+  text-align: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 40pt;
+}
+
+h2 {
+  color: #02934a;
+}
+
+
+</style>
+
+
+# Updates
+
+---
+
+```{r echo=FALSE, fig.align='center', out.width="80%"}
+include_graphics("../../img/nuvolos_help.png")
+```
+
+https://app.nuvolos.cloud/enroll/class/1PD9sApvyCI
+
+# Recap
+
+<!-- ## COVID-19: Protective measures for teaching activities -->
+
+<!-- 1. Admittance only for symptom-free persons.  -->
+<!-- 2. Observe hygiene and safety measures.  -->
+<!-- 3. Have an online backup solution ready.  -->
+<!-- 4. Mandatory wearing of masks – except for individuals when alone in a room.  -->
+<!-- 5. Attendance lists, if   wearing a mask is not possible for methodical/didactic reasons.  -->
+<!-- 6. Faculty without masks must keep a distance of 1.5 m at all times when teaching. -->
+
+<!-- ## COVID-19: Protective measures for teaching activities -->
+
+<!-- 1. Admittance only for symptom-free persons.  -->
+<!-- 2. Observe hygiene and safety measures.  -->
+<!-- 3. Have an online backup solution ready.  -->
+<!-- 4. Mandatory wearing of masks – except for individuals when alone in a room.  -->
+<!-- 5. Attendance lists, if   wearing a mask is not possible for methodical/didactic reasons.  -->
+<!-- 6. Faculty without masks must keep a distance of 1.5 m at all times when teaching. -->
+
+<!-- *Students must also wear a mask in the classrooms, and also while sitting!* -->
+
+
+
+---
+
+
+```{r echo=FALSE, fig.align='center', out.width="90%"}
+include_graphics("../../img/ds_matrix.png")
+```
+
+
+# Basic Programming Concepts
+
+---
+
+<h4>Values and Variables</h4>
+
+---
+
+<h4>Vectors</h4>
+
+
+----
+
+```{r echo=FALSE, fig.align='center', out.width="10%"}
+include_graphics("../../img/numvec.png")
+```
+
+----
+
+```{r echo=FALSE, fig.align='center', out.width="10%"}
+include_graphics("../../img/charvec.svg")
+```
+
+
+---
+
+<h4>Math operators</h4>
+
+
+----
+
+
+```{r}
+# basic arithmetic
+2+2
+sum_result <- 2+2
+sum_result
+sum_result -2
+4*5
+20/5
+
+# other common math operators and functions
+4^2
+sqrt(4^2)
+log(2)
+exp(10)
+log(exp(10))
+
+
+```
+
+
+----
+
+<h4>Loops</h4>
+
+---
+
+<h4>for-loop</h4>
+
+----
+
+```{r echo=FALSE, fig.align='center', out.width="40%"}
+include_graphics("../../img/forloop_black.png")
+```
+
+---
+
+```{r eval=FALSE}
+# number of iterations
+n <- 100
+# start loop
+for (i in 1:n) {
+
+     # BODY
+}
+
+```
+
+
+---
+
+<h4>while-loop</h4>
+
+----
+
+
+
+
+```{r while, echo= FALSE, fig.align="center", out.width="60%"}
+include_graphics("../../img/while_loop_black_own.png")
+```
+
+## `while`-loop in R
+
+```{r eval=FALSE}
+# initiate variable for logical statement
+x <- 1
+# start loop
+while (x == 1) {
+
+     # BODY
+}
+
+```
+
+
+---
+
+<h4>Logical statements</h4>
+
+----
+
+```{r eval=FALSE}
+2+2 == 4 # is equal to
+3+3 == 7
+4!=7 # is not equal to
+6>3 
+6<7
+6<=6
+```
+
+---
+
+<h4>Control statements</h4>
+
+----
+
+
+
+## Control statements in R
+
+```{r}
+
+condition <- TRUE
+
+if (condition) {
+     print("This is true!")
+} else {
+     print("This is false!")
+}
+
+
+```
+
+
+---
+
+<h4>Functions</h4>
+
+----
+
+---
+
+<h4>$f:X \rightarrow Y$</h4>
+
+----
+
+
+---
+
+<h4>$2\times X = Y$</h4>
+
+----
+
+
+## Functions in R
+
+- load existing functions
+
+```{r eval=FALSE, purl=FALSE}
+# install a package
+install.packages("<PACKAGE NAME>")
+# load a package
+library(<PACKAGE NAME>)
+```
+
+## Functions in R
+
+- Write functions
+
+```{r eval=FALSE, purl=FALSE}
+myfun <- function(){
+  
+}
+```
+
+
+
+# Tutorial: A Function to Compute the Mean
+
+
+---
+
+<center>
+*Starting point: we should be aware of how the mean is defined:*
+
+$\bar{x} = \frac{1}{n}\left (\sum_{i=1}^n{x_i}\right ) = \frac{x_1+x_2+\cdots +x_n}{n}$.
+</center>
+
+---
+
+## Preparation
+
+```{r}
+#####################################
+# Mean Function:
+# Computes the mean, given a 
+# numeric vector.
+
+```
+
+
+
+
+# Q&A
+
+
+<style>
+slides > slide { overflow: scroll; }
+slides > slide:not(.nobackground):after {
+  content: '';
+}
+
+
+code {
+  color: white;
+}
+
+
+pre {
+  color: white;
+}
+</style>
+
+<!-- ## References {.smaller} -->
+

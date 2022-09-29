@@ -1,0 +1,450 @@
+---
+title: 'Data Handling: Import, Cleaning and Visualisation'
+subtitle: 'Lecture 2:<br>Programming with Data'
+author: "Prof. Dr. Ulrich Matter"
+output:
+  html_document:
+    highlight: tango
+    theme: cerulean
+    mathjax: "http://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"
+  pdf_document:
+    pandoc_args:
+    - --filter
+    - ../../code/math.py
+header-includes:
+- \usepackage[T1]{fontenc}
+- \usepackage{hyperref}
+css: ../../style/notes_hsg.css
+bibliography: ../../references/datahandling.bib
+---
+
+
+
+```{r set-options, echo=FALSE, cache=FALSE, warning=FALSE}
+options(width = 100)
+library(knitr)
+```
+
+
+
+
+
+# Basic Programming Concepts
+
+## Values, vectors, variables
+
+- Values: a quantity of information, that is, in the simplest case, a letter (`"a"`, "character"), integer (`2`), fraction (`1.5`)
+- Vector: a simple R object containing one or a collection of values (of the same data type)
+- Variables: abstract storage location with a name. With `<-` we can assign a value to a variable.
+
+## Values and variables
+
+```{r}
+# assign values to variables
+a <- "Hello"
+print(a)
+
+# re-use variables
+savings_t0 <- 2500
+interest_rate <- 0.015
+savings_t1 <- savings_t0 + (savings_t0 * 0.015)
+savings_t1
+
+```
+
+
+## Vectors
+
+```{r}
+# initiate a character (text) vector
+some_names <- c("Andy", "Betty", "Claire")
+some_names
+
+# how many elemnts are in a vector?
+length(some_names)
+
+# initiate an integer vector
+some_numbers <- c(30, 50, 60)
+some_numbers
+other_numbers <- 1:10
+other_numbers
+
+
+```
+
+## Vectorization in R
+
+ - Basic R functions (like math operators) are vectorized (execute the core function on each of the elements of a vector).
+ - Advantages: fast, clean code, optimal for writing analytics scripts.
+ - Note: "In R, everything is a vector"!
+ 
+```{r}
+some_numbers + 1
+some_numbers > 3
+some_numbers * 5
+```
+
+
+## Math operators in R
+
+```{r}
+# basic arithmetic
+2+2
+sum_result <- 2+2
+sum_result
+sum_result -2
+4*5
+20/5
+
+# order of operations
+2+2*3
+(2+2)*3
+(5+5)/(2+3)
+
+# work with variables
+a <- 20
+b <- 10
+a/b
+
+# arithmetics with vectors
+a <- c(1,4,6)
+a * 2
+
+b <- c(10,40,80)
+a * b
+a + b
+
+
+# other common math operators and functions
+4^2
+sqrt(4^2)
+log(2)
+exp(10)
+log(exp(10))
+
+
+```
+
+To look up the most common math operators in R and get more details about how to use them type 
+
+```{r}
+
+?`+`
+
+```
+
+in the R console and hit enter.
+
+
+## Loops
+- Repeatedly execute a sequence of commands.
+- Known or unknown number of iterations.
+- Types: 'for-loop' and 'while-loop'.
+     - 'for-loop': number of iterations typically known.
+     - 'while-loop: number of iterations typically not known.
+
+## for-loop
+
+```{r echo=FALSE, fig.align='center', out.width="40%"}
+include_graphics("../../img/forloop.png")
+```
+
+## `for`-loop in R
+
+```{r eval=FALSE}
+# number of iterations
+n <- 100
+# start loop
+for (i in 1:n) {
+
+     # BODY
+}
+
+```
+
+## `for`-loop in R
+
+```{r}
+# vector to be summed up
+numbers <- c(1,2,3,4,5)
+# initiate total
+total_sum <- 0
+# number of iterations
+n <- length(numbers)
+# start loop
+for (i in 1:n) {
+     total_sum <- total_sum + numbers[i]
+}
+
+```
+
+## Nested `for`-loops
+
+```{r}
+# matrix to be summed up
+numbers_matrix <- matrix(1:20, ncol = 4)
+numbers_matrix
+
+```
+
+## Nested `for`-loops
+
+```{r eval=FALSE}
+# number of iterations for outer loop
+m <- ncol(numbers_matrix)
+# number of iterations for inner loop
+n <- nrow(numbers_matrix)
+# start outer loop (loop over columns of matrix)
+for (j in 1:m) {
+     # start inner loop
+     # initiate total
+     total_sum <- 0
+     for (i in 1:n) {
+          total_sum <- total_sum + numbers_matrix[i, j]
+          }
+     print(total_sum)
+     }
+
+```
+
+
+
+
+## while-loop
+
+```{r while, echo= FALSE, fig.align="center", out.width="45%"}
+include_graphics("../../img/while_loop_own.png")
+```
+
+## `while`-loop in R
+
+```{r eval=FALSE}
+# initiate variable for logical statement
+x <- 1
+# start loop
+while (x == 1) {
+
+     # BODY
+}
+
+```
+
+## `while`-loop in R
+
+```{r}
+# initiate starting value
+total <- 0
+# start loop
+while (total <= 20) {
+     total <- total + 1.12
+}
+
+```
+
+
+## Booleans and logical statements
+```{r}
+2+2 == 4
+3+3 == 7
+4!=7
+6>3
+6<7
+6<=6
+```
+
+
+## Control statements
+
+ - What to do at a certain point in the program?
+ - Check conditions, decide on path.
+ - "If this is the case then do that..."
+ - "else do the other..."
+
+```{r}
+
+condition <- TRUE
+
+if (condition) {
+     print("This is true!")
+} else {
+     print("This is false!")
+}
+
+
+```
+
+
+## Booleans and logical statements
+
+```{r}
+
+condition <- FALSE
+
+if (condition) {
+     print("This is true!")
+} else {
+     print("This is false!")
+}
+
+
+```
+
+
+
+
+
+## R functions
+
+- $f:X \rightarrow Y$
+- 'Take a variable/parameter value $X$ as input and provide value $Y$ as output'
+- For example, $2\times X = Y$.
+- R functions take 'parameter values' as input, process those values according to a predefined program, and 'return' the results.
+
+## R functions
+
+- Many functions are provided with R.
+- More can be loaded by installing and loading packages.
+
+```{r eval=FALSE, purl=FALSE}
+# install a package
+install.packages("<PACKAGE NAME>")
+# load a package
+library(<PACKAGE NAME>)
+```
+
+
+# Tutorial: A Function to Compute the Mean
+
+## Preparation
+
+  1. Open a new R-script and save it in your `code`-directory as `my_mean.R`.
+  2. In the first few lines, use `#` to write some comments describing what this script is about.
+  
+## Preparation
+
+```{r}
+#####################################
+# Mean Function:
+# Computes the mean, given a 
+# numeric vector.
+
+```
+
+## Preparation
+
+  1. Open a new R-script and save it in your `code`-directory as `my_mean.R`.
+  2. In the first few lines, use `#` to write some comments describing what this script is about.
+  3. Also in the comment section, describe the function argument (input) and the return value (output)
+  
+## Preparation
+
+```{r}
+#####################################
+# Mean Function:
+# Computes the mean, given a 
+# numeric vector.
+# x, a numeric vector
+# returns the arithmetic mean of x (a numeric scalar)
+
+```
+
+
+## Preparation
+
+  1. Open a new R-script and save it in your `code`-directory as `my_mean.R`.
+  2. In the first few lines, use `#` to write some comments describing what this script is about.
+  3. Also in the comment section, describe the function argument (input) and the return value (output)
+  4. Add an example (with comments), illustrating how the function is supposed to work.
+
+## Preparation
+
+```{r}
+# Example:
+# a simlpe numeric vector, for which we want to compute the mean
+# a <- c(5.5, 7.5)
+# desired functionality and output:
+# my_mean(a)
+# 6.5
+```
+
+
+## 1. Know the concepts/context!
+
+  - Programming a function in R means telling R how to transform a given input (x).
+  - Before we think about how we can express this transformation in the R language, we should be sure that we understand the transformation per se.
+
+## 1. Know the concepts/context!
+
+  - Programming a function in R means telling R how to transform a given input (x).
+  - Before we think about how we can express this transformation in the R language, we should be sure that we understand the transformation per se.
+
+<center>
+*Here, we should be aware of how the mean is defined:*
+
+$\bar{x} = \frac{1}{n}\left (\sum_{i=1}^n{x_i}\right ) = \frac{x_1+x_2+\cdots +x_n}{n}$.
+</center>
+
+## 2. Split the problem into several smaller problems
+
+From looking at the mathematical definition of the mean ($\bar{x}$), we recognize that there are two main components to computing the mean:
+
+ - $\sum_{i=1}^n{x_i}$: the *sum* of all the elements in vector $x$
+ - and $n$, the *number of elements* in vector $x$.
+ 
+## 3. Address each problem step-by-step
+
+In R, there are two built-in functions that deliver exactly these two components: 
+
+ - *`sum()`* returns the sum of all the values in i ts arguments (i.e., if `x` is a numeric vector, `sum(x)` returns the sum of all elements in `x`).
+ - *`length()`* returns the total number of elements in a given vector (the vector's 'length').
+
+
+## 4. Putting the pieces together
+
+With the following short line of code we thus get the mean of the elements in vector `a`.
+```{r eval=FALSE}
+sum(a)/length(a)
+```
+
+## 5. Define the function
+
+All that is left to do is to pack all this into the function body of our newly defined `my_mean()` function:
+
+```{r}
+# define our own function to compute the mean, given a numeric vector
+my_mean <- function(x) {
+     x_bar <- sum(x) / length(x)
+     return(x_bar)
+}
+```
+
+## 6. Test it with the pre-defined example
+
+
+```{r}
+# test it
+a <- c(5.5, 7.5)
+my_mean(a)
+```
+
+
+## 6. Test it with other implementations
+
+
+Here, compare  it with the built-in `mean()` function:
+
+```{r}
+b <- c(4,5,2,5,5,7)
+my_mean(b) # our own implementation
+mean(b) # the built_in function
+```
+
+
+
+
+
+
+
+
+<!-- ## References {.smaller} -->
+

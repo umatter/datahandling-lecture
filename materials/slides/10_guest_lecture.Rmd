@@ -1,0 +1,62 @@
+---
+title: 'Data Handling: Import, Cleaning and Visualisation'
+subtitle: 'Lecture 10:<br>Guest Lecture by Corina '
+author: "Prof. Dr. Ulrich Matter"
+output:   
+  ioslides_presentation:
+    css: ../../style/ioslides.css
+    template: ../../style/nologo_template.html
+    mathjax: "default"
+logo: ../img/logo.png
+bibliography: ../references/datahandling.bib
+---
+
+
+
+```{r set-options, echo=FALSE, cache=FALSE, warning=FALSE}
+options(width = 100)
+library(knitr)
+```
+
+
+<style>
+pre {
+  font-size: 21px;
+}
+</style>
+
+
+# Updates
+
+
+
+## Guest lecture by !
+
+
+- 45-60 minutes talk.
+- Q&A.
+
+
+
+
+
+
+<style>
+slides > slide { overflow: scroll; }
+slides > slide:not(.nobackground):after {
+  content: '';
+}
+
+
+code {
+  color: white;
+}
+
+
+pre {
+  color: white;
+}
+</style>
+
+## References {.smaller}
+
