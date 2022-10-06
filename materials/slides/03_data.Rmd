@@ -1,15 +1,14 @@
 ---
 title: 'Data Handling: Import, Cleaning and Visualisation'
 author: "Prof. Dr. Ulrich Matter"
-output:
+subtitle: Lecture 3:<br>A Brief Introduction to Data and Data Processing
+output:   
   ioslides_presentation:
     css: ../../style/ioslides.css
-    mathjax: default
     template: ../../style/nologo_template.html
-  slidy_presentation: default
-logo: ../img/logo.png
-subtitle: Lecture 3:<br>A Brief Introduction to Data and Data Processing
-bibliography: ../references/datahandling.bib
+    mathjax: "default"
+logo: ../../img/logo.png
+bibliography: ../../references/datahandling.bib
 ---
 
 
@@ -19,185 +18,46 @@ options(width = 100)
 library(knitr)
 ```
 
-# Updates
 
+# Recap
 
-<!-- ## Exam for exchange students -->
+## Basic programming concepts
 
-<!-- - Exchange students who need to take the exam before the central exam block: -->
-<!--     - Decentral exam for *exchange students: TBD* -->
-<!--     - Location: SIAW Institute, conference room (top floor), Bodanstrasse 8, 9000 St. Gallen -->
-
-## Course resources and tools
-
-- Canvas/StudyNet page: slides, notes, exercises, solutions
-- R/Rstudio (in Nuvolos and locally on your machine)
-
-<!-- - *GitHub repo*: https://github.com/umatter/datahandling -->
-<!--      - Source code of slides/notes -->
-<!--      - Code used in examples -->
-<!--           - Clone/fork: e.g., extend notes etc. -->
-<!--           - Open issues/report bugs  -->
-          
-
-<!-- - GitHub Classroom (instructions and auto-correction of small exercises) -->
-          
-## Tools
-
-```{r learning, echo=FALSE, out.width = "100%", fig.align='center',  purl=FALSE}
-include_graphics("../img/learning_systems.PNG")
-```
-
-
-
-# Recap: Data Science, Data Pipeline
-
-
-## Class survey >>> Final output
-
----
-
-```{r pipeline, echo=FALSE, out.width = "85%", fig.align='center',  purl=FALSE}
-include_graphics("../img/data_science_pipeline.png")
-```
-
-
-## 'Data products'
-
-- Research report/paper (e.g., BA Thesis)
-- Presentation/Slides
-- Website
-- Web application (interactive; alas the introductory example)
-- Dashboard for management
-- Recommender system (i.e., a trained machine learning algorithm)
-- ...
-
-## Data Science skill set
-
-
-```{r venn, echo=FALSE, out.width = "60%", fig.align='center',  purl=FALSE}
-include_graphics("../img/venn_diagramm.png")
-```
-
-
-
-# Data in Human History
-
-
+ - Values, variables
+ - Vectors
+ - Loops
+ - Logical statements
+ - Control statements
+ - Functions
+ 
 ----
-
-```{r stoneage, echo=FALSE, out.width = "90%", fig.align='center', fig.cap= '"Stone Age" (painting by Viktor Mikhailovich Vasnetsov, public domain).', purl=FALSE}
-include_graphics("../img/stone_age.jpg")
+ 
+ 
+```{r scratch, echo=FALSE, out.width = "80%", fig.align='center', purl=FALSE}
+include_graphics("../../img/scratch_logo.png")
 ```
 
+https://scratch.mit.edu/
 
-----
-
-
-```{r domestication, echo=FALSE, out.width = "90%", fig.align='center', fig.cap= "Old Egyptian hieroglyphic painting showing an early instance of a domesticated animal. (public domain).", purl=FALSE}
-include_graphics("../img/domestication.jpg")
-```
-
-
-----
-
-```{r contract, echo=FALSE, out.width = "60%", fig.align='center', fig.cap= "Sumerian contract: selling of a field and a house. Shuruppak, pre-cuneiform script. Shuruppak, 2600 BC.  (Picture by Marie-Lan Nguyen 2005, public domain).", purl=FALSE}
-include_graphics("../img/sales_contract.jpg")
-```
-
-
-
-## Ancient data records
-
-- Measuring, quantifying, and keeping record of our social and natural environments.
-    - Keep track of time, seasons.
-    - Property rights: define/quantify land areas.
-    - Quantify harvest/yield.
-
-## Economic growth and data
-
-More advanced economy:
-
-- More sophisticated division of labor.
-- More complex property rights.
-- More need to keep track of everything.
-
-## Economic growth and data
-
-More advanced economy: *more data to handle!*
-
-## Economic growth and data
-
-More advanced economy: *more data to handle!*
-
-- How to keep track of calculations with large numbers?
-
----
-
-```{r pebbles, echo=FALSE, out.width = "55%", fig.align='center', purl=FALSE}
-include_graphics("../img/pebbles.jpg")
-```
-
-
----
-
-```{r shells, echo=FALSE, out.width = "85%", fig.align='center', purl=FALSE}
-include_graphics("../img/shells.jpg")
-```
-
----
-
-```{r ancientabacus, echo=FALSE, out.width = "85%", fig.align='center', purl=FALSE}
-include_graphics("../img/ancient_abacus_white.png")
-```
+# Data Processing
 
 ----
 
 ```{r newabacus, echo=FALSE, out.width = "80%", fig.align='center', purl=FALSE}
-include_graphics("../img/new_abacus.jpg")
+include_graphics("../../img/new_abacus.jpg")
 ```
 
-
-# Processing Data
-
-## Simple calculations in numeral systems
-
-How does the abacus work?
-
-- Need to agree on a standard (numeral system)!
-- Define the *base* of the frame's numeral system.
-- For example, a Roman abacus with base 10.
-
-
-## The Roman abacus (base 10)
+---
 
 ```{r abacus, echo=FALSE, out.width = "85%", fig.align='center', purl=FALSE}
-include_graphics("../img/abacus_black_own.png")
+include_graphics("../../img/abacus_black_own.png")
 ```
 
 
-## The Roman abacus (base 10)
-The example in more detail:
-
-- Columns reflect the positions of the digits
-- and signify the power of 10 with which the digit is multiplied:
-
-$139=(1 \times 10^{2}) + (3 \times 10^{1}) + (9 \times 10^{0})$
-
-- *Base 10*: 10 different signs (0-9) to distinguish one-digit numbers. 
-
-## Base 10: the 'decimal system'
-
-- What we work with in everyday life.
-- What we encounter in undergraduate math, statistics, etc.
-- However, not the relevant base once we use electronic tools.
-
-
-
-## Recall the data processing 'blackbox'
+---
 
 ```{r blackbox, echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
-include_graphics("../img/cpu_blackbox.png")
+include_graphics("../../img/cpu_blackbox.png")
 ```
 
 
@@ -209,7 +69,7 @@ Microprocessors can only represent two signs (states):
  - 'On' = `1`
 
 ```{r onoff, echo=FALSE, out.width = "10%", fig.align='center', purl=FALSE}
-include_graphics("../img/on_off.png")
+include_graphics("../../img/on_off.png")
 ```
 
 
@@ -280,19 +140,19 @@ If computers only understand `0` and `1`, how can they express decimal numbers l
 
 
 ```{r binarykeyboard, echo=FALSE, out.width = "40%", fig.align='center', purl=FALSE}
-include_graphics("../img/binary_keyboard.jpg")
+include_graphics("../../img/binary_keyboard.jpg")
 ```
 
 
 
-## Decimal numbers in a computer
+## Conversion between binary and decimal
 
 
 Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1 
 -----|-----|----|----|----|----|----|----|----
 
 
-## Decimal numbers in a computer
+## Conversion between binary and decimal
 
 
 Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1 
@@ -300,7 +160,7 @@ Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1
 0  = | 0   |  0 | 0  |  0 | 0 |  0 | 0  |  0  
 
 
-## Decimal numbers in a computer
+## Conversion between binary and decimal
 
 
 Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1 
@@ -310,7 +170,7 @@ Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1
 
 
 
-## Decimal numbers in a computer
+## Conversion between binary and decimal
 
 
 Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1 
@@ -320,7 +180,7 @@ Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1
 2  = | 0   |  0 | 0  |  0 | 0 |  0 | 1  |  0
 
 
-## Decimal numbers in a computer
+## Conversion between binary and decimal
 
 
 Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1 
@@ -332,7 +192,7 @@ Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1
 
 
 
-## Decimal numbers in a computer
+## Conversion between binary and decimal
 
 
 Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1 
@@ -438,7 +298,7 @@ Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1
 How can a computer understand text if it only understands `0`s and `1`s?
 
 ```{r keyboard, echo=FALSE, out.width = "90%", fig.align='center', fig.cap="A modified version of South Korean Dubeolsik (two-set type) for old hangul letters. (Illustration by Yes0song 2010,  [Creative Commons Attribution-Share Alike 3.0 Unported](https://creativecommons.org/licenses/by-sa/3.0/deed.en))", purl=FALSE}
-include_graphics("../img/keyboard.png")
+include_graphics("../../img/keyboard.png")
 ```
 
 
@@ -458,7 +318,7 @@ How can a computer understand text if it only understands `0`s and `1`s?
 - For example, ASCII (American Standard Code for Information Interchange).
 
 ```{r ascii, echo=FALSE, out.width = "30%", fig.align='center', fig.cap='ASCII logo. (public domain).', purl=FALSE}
-include_graphics("../img/ascii.gif")
+include_graphics("../../img/ascii.gif")
 ```
 
 
@@ -530,7 +390,7 @@ In both of these domains we mainly work with one simple type of document: *text 
 
 ```{r echo=FALSE, fig.align='center', out.width="45%"}
 
-include_graphics("../img/rstudio.png")
+include_graphics("../../img/rstudio.png")
 
 ```
 Install RStudio from [here](https://www.rstudio.com/products/rstudio/download/#download)!
@@ -542,7 +402,7 @@ Install RStudio from [here](https://www.rstudio.com/products/rstudio/download/#d
 
 ```{r echo=FALSE, fig.align='center', out.width="45%"}
 
-include_graphics("../img/atom.png")
+include_graphics("../../img/atom.png")
 
 ```
 Install Atom from [here](https://flight-manual.atom.io/getting-started/sections/installing-atom/)!
@@ -554,7 +414,7 @@ Install Atom from [here](https://flight-manual.atom.io/getting-started/sections/
 ----
 
 ```{r blackbox2, echo=FALSE, out.width = "75%", fig.align='center', fig.cap= "The 'blackbox' of data processing.", purl=FALSE}
-include_graphics("../img/cpu_blackbox.png")
+include_graphics("../../img/cpu_blackbox.png")
 ```
 
 
@@ -565,19 +425,15 @@ include_graphics("../img/cpu_blackbox.png")
 &nbsp;
 
 ```{r components, echo=FALSE, out.width = "80%", fig.align='center', fig.cap= "Basic components of a standard computing environment.", purl=FALSE}
-include_graphics("../img/script-hardware.jpg")
+include_graphics("../../img/script-hardware.jpg")
 ```
 
 ## Central Processing Unit
 
 &nbsp;
 
-```{r cpu, echo=FALSE, out.width = "10%", fig.align='center', purl=FALSE}
-include_graphics("../img/script-cpu.png")
-```
-
 ```{r cpu2, echo=FALSE, out.width = "30%", fig.align='center', purl=FALSE}
-include_graphics("../img/cpu.jpg")
+include_graphics("../../img/cpu.jpg")
 ```
 
 
@@ -587,27 +443,11 @@ include_graphics("../img/cpu.jpg")
 
 &nbsp;
 
-```{r ram, echo=FALSE, out.width = "10%", fig.align='center', purl=FALSE}
-include_graphics("../img/script-ram.png")
-```
-
 ```{r ram2, echo=FALSE, out.width = "45%", fig.align='center', purl=FALSE}
-include_graphics("../img/ram.jpg")
+include_graphics("../../img/ram.jpg")
 ```
 
 
-
-## Input hardware: keyboard
-
-&nbsp;
-
-```{r keybd, echo=FALSE, out.width = "15%", fig.align='center', purl=FALSE}
-include_graphics("../img/script-keybd.png")
-```
-
-```{r keyboard2, echo=FALSE, out.width = "45%", fig.align='center', fig.cap="A modified version of South Korean Dubeolsik (two-set type) for old hangul letters. (Illustration by Yes0song 2010,  [Creative Commons Attribution-Share Alike 3.0 Unported](https://creativecommons.org/licenses/by-sa/3.0/deed.en))", purl=FALSE}
-include_graphics("../img/keyboard.png")
-```
 
 
 
@@ -616,38 +456,18 @@ include_graphics("../img/keyboard.png")
 
 &nbsp;
 
-```{r harddrive, echo=FALSE, out.width = "10%", fig.align='center', purl=FALSE}
-include_graphics("../img/script-massstorage.png")
-```
-
 ```{r harddrive2, echo=FALSE, out.width = "45%", fig.align='center', purl=FALSE}
-include_graphics("../img/harddrive.jpg")
+include_graphics("../../img/harddrive.jpg")
 ```
 
 
-## Screen: output hardware
-
-&nbsp;
-
-```{r output, echo=FALSE, out.width = "10%", fig.align='center', purl=FALSE}
-include_graphics("../img/script-screen.png")
-```
-
-```{r screen, echo=FALSE, out.width = "55%", fig.align='center', purl=FALSE}
-include_graphics("../img/screen.png")
-```
 
 
 ## Network: Internet, cloud, etc.
 
-&nbsp;
-
-```{r network, echo=FALSE, out.width = "10%", fig.align='center', purl=FALSE}
-include_graphics("../img/script-network.png")
-```
 
 ```{r www, echo=FALSE, out.width = "45%", fig.align='center', purl=FALSE}
-include_graphics("../img/www.png")
+include_graphics("../../img/www.png")
 ```
 
 

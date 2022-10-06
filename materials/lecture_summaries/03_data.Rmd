@@ -2,14 +2,19 @@
 title: 'Data Handling: Import, Cleaning and Visualisation'
 author: "Prof. Dr. Ulrich Matter"
 output:
-  ioslides_presentation:
-    css: ../../style/ioslides.css
-    mathjax: default
-    template: ../../style/nologo_template.html
-  slidy_presentation: default
-logo: ../img/logo.png
-subtitle: Lecture 2:<br>A Brief Introduction to Data and Data Processing
-bibliography: ../references/datahandling.bib
+  html_document:
+    highlight: tango
+    theme: cerulean
+    mathjax: "http://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"
+  pdf_document:
+    pandoc_args:
+    - --filter
+    - ../../code/math.py
+header-includes:
+- \usepackage[T1]{fontenc}
+- \usepackage{hyperref}
+css: ../../style/notes_hsg.css
+bibliography: ../../references/datahandling.bib
 ---
 
 
@@ -17,144 +22,6 @@ bibliography: ../references/datahandling.bib
 ```{r set-options, echo=FALSE, cache=FALSE, warning=FALSE}
 options(width = 100)
 library(knitr)
-```
-
-# Updates
-
-
-<!-- ## Exam for exchange students -->
-
-<!-- - Exchange students who need to take the exam before the central exam block: -->
-<!--     - Decentral exam for *exchange students: TBD* -->
-<!--     - Location: SIAW Institute, conference room (top floor), Bodanstrasse 8, 9000 St. Gallen -->
-
-## Course resources
-
-- Canvas/StudyNet page: slides, notes, exercises, solutions
-- *GitHub repo*: https://github.com/umatter/datahandling
-     - Source code of slides/notes
-     - Code used in examples
-          - Clone/fork: e.g., extend notes etc.
-          - Open issues/report bugs 
-          
-## Tools
-
-- R/Rstudio (local and `in the cloud' on Nuvolos)
-- GitHub Classroom (instructions and auto-correction of small exercises)
-          
-## Tools
-
-```{r learning, echo=FALSE, out.width = "100%", fig.align='center',  purl=FALSE}
-include_graphics("../img/learning_systems.PNG")
-```
-
-
-
-# Recap: Data Science, Data Pipeline
-
-
-## Class survey >>> Final output
-
----
-
-```{r pipeline, echo=FALSE, out.width = "85%", fig.align='center',  purl=FALSE}
-include_graphics("../img/data_science_pipeline.png")
-```
-
-
-## 'Data products'
-
-- Research report/paper (e.g., BA Thesis)
-- Presentation/Slides
-- Website
-- Web application (interactive; alas the introductory example)
-- Dashboard for management
-- Recommender system (i.e., a trained machine learning algorithm)
-- ...
-
-## Data Science skill set
-
-
-```{r venn, echo=FALSE, out.width = "60%", fig.align='center',  purl=FALSE}
-include_graphics("../img/venn_diagramm.png")
-```
-
-
-
-# Data in Human History
-
-
-----
-
-```{r stoneage, echo=FALSE, out.width = "90%", fig.align='center', fig.cap= '"Stone Age" (painting by Viktor Mikhailovich Vasnetsov, public domain).', purl=FALSE}
-include_graphics("../img/stone_age.jpg")
-```
-
-
-----
-
-
-```{r domestication, echo=FALSE, out.width = "90%", fig.align='center', fig.cap= "Old Egyptian hieroglyphic painting showing an early instance of a domesticated animal. (public domain).", purl=FALSE}
-include_graphics("../img/domestication.jpg")
-```
-
-
-----
-
-```{r contract, echo=FALSE, out.width = "60%", fig.align='center', fig.cap= "Sumerian contract: selling of a field and a house. Shuruppak, pre-cuneiform script. Shuruppak, 2600 BC.  (Picture by Marie-Lan Nguyen 2005, public domain).", purl=FALSE}
-include_graphics("../img/sales_contract.jpg")
-```
-
-
-
-## Ancient data records
-
-- Measuring, quantifying, and keeping record of our social and natural environments.
-    - Keep track of time, seasons.
-    - Property rights: define/quantify land areas.
-    - Quantify harvest/yield.
-
-## Economic growth and data
-
-More advanced economy:
-
-- More sophisticated division of labor.
-- More complex property rights.
-- More need to keep track of everything.
-
-## Economic growth and data
-
-More advanced economy: *more data to handle!*
-
-## Economic growth and data
-
-More advanced economy: *more data to handle!*
-
-- How to keep track of calculations with large numbers?
-
----
-
-```{r pebbles, echo=FALSE, out.width = "55%", fig.align='center', purl=FALSE}
-include_graphics("../img/pebbles.jpg")
-```
-
-
----
-
-```{r shells, echo=FALSE, out.width = "85%", fig.align='center', purl=FALSE}
-include_graphics("../img/shells.jpg")
-```
-
----
-
-```{r ancientabacus, echo=FALSE, out.width = "85%", fig.align='center', purl=FALSE}
-include_graphics("../img/ancient_abacus_white.png")
-```
-
-----
-
-```{r newabacus, echo=FALSE, out.width = "80%", fig.align='center', purl=FALSE}
-include_graphics("../img/new_abacus.jpg")
 ```
 
 
@@ -171,8 +38,8 @@ How does the abacus work?
 
 ## The Roman abacus (base 10)
 
-```{r abacus, echo=FALSE, out.width = "85%", fig.align='center', purl=FALSE}
-include_graphics("../img/abacus_black_own.png")
+```{r abacus, echo=FALSE, out.width = "65%", fig.align='center', purl=FALSE}
+include_graphics("../../img/abacus_own.png")
 ```
 
 
@@ -194,13 +61,6 @@ $139=(1 \times 10^{2}) + (3 \times 10^{1}) + (9 \times 10^{0})$
 
 
 
-## Recall the data processing 'blackbox'
-
-```{r blackbox, echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
-include_graphics("../img/cpu_blackbox.png")
-```
-
-
 ## The binary system
 
 Microprocessors can only represent two signs (states): 
@@ -209,7 +69,7 @@ Microprocessors can only represent two signs (states):
  - 'On' = `1`
 
 ```{r onoff, echo=FALSE, out.width = "10%", fig.align='center', purl=FALSE}
-include_graphics("../img/on_off.png")
+include_graphics("../../img/on_off.png")
 ```
 
 
@@ -269,71 +129,22 @@ $$(1 \times 2^7) + (0 \times 2^6) +  (0 \times 2^5) +  (0 \times 2^4) + (1 \time
 
 If computers only understand `0` and `1`, how can they express decimal numbers like *139*?
 
-
-
-## Decimal numbers in a computer
-
-If computers only understand `0` and `1`, how can they express decimal numbers like *139*?
-
 - *Standards* define how symbols, colors, etc are shown on the screen.
 - Facilitates interaction with a computer (our keyboards do not only consist of a `0`/`1` switch).
 
 
 ```{r binarykeyboard, echo=FALSE, out.width = "40%", fig.align='center', purl=FALSE}
-include_graphics("../img/binary_keyboard.jpg")
+include_graphics("../../img/binary_keyboard.jpg")
 ```
 
 
 
-## Decimal numbers in a computer
+## Express decimal numbers in binary values
 
-
-Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1 
------|-----|----|----|----|----|----|----|----
-
-
-## Decimal numbers in a computer
-
-
-Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1 
------|-----|----|----|----|----|----|----|----
-0  = | 0   |  0 | 0  |  0 | 0 |  0 | 0  |  0  
-
-
-## Decimal numbers in a computer
-
-
-Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1 
------|-----|----|----|----|----|----|----|----
-0  = | 0   |  0 | 0  |  0 | 0 |  0 | 0  |  0  
-1  = | 0   |  0 | 0  |  0 | 0 |  0 | 0  |  1
-
-
-
-## Decimal numbers in a computer
-
-
-Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1 
------|-----|----|----|----|----|----|----|----
-0  = | 0   |  0 | 0  |  0 | 0 |  0 | 0  |  0  
-1  = | 0   |  0 | 0  |  0 | 0 |  0 | 0  |  1
-2  = | 0   |  0 | 0  |  0 | 0 |  0 | 1  |  0
-
-
-## Decimal numbers in a computer
-
-
-Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1 
------|-----|----|----|----|----|----|----|----
-0  = | 0   |  0 | 0  |  0 | 0 |  0 | 0  |  0  
-1  = | 0   |  0 | 0  |  0 | 0 |  0 | 0  |  1
-2  = | 0   |  0 | 0  |  0 | 0 |  0 | 1  |  0
-3  = | 0   |  0 | 0  |  0 | 0 |  0 | 1  |  1
-
-
-
-## Decimal numbers in a computer
-
+ - *How to translate from one to the other?*
+ - Draw a "binary abacus" in the form of a table.
+ - Fill in 0s and 1s in the corresponding columns to "select" and sum up the 
+ $2^i$.
 
 Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1 
 -----|-----|----|----|----|----|----|----|----
@@ -347,109 +158,11 @@ Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1
 
 
 
-## The hexadecimal system
-
-- Binary numbers can become quite long rather quickly.
-- Computer Science: refer to binary numbers with the *hexadecimal* system.
-
-
-## The hexadecimal system
-
-- *16 symbols*: 
-    - `0`-`9` (used like in the decimal system)...
-    - and `A`-`F` (for the numbers 10 to 15).
-  
-
-## The hexadecimal system
-
-- *16 symbols*: 
-    - `0`-`9` (used like in the decimal system)...
-    - and `A`-`F` (for the numbers 10 to 15).
-  
-- *16 symbols >>> base 16*: each digit represents an increasing power of 16 ($16^{0}$, $16^{1}$, etc.).
-
-
-
-
-## The hexadecimal system
-
-What is the decimal number 139 expressed in the hexadecimal system?
-
-
-## The hexadecimal system
-
-What is the decimal number 139 expressed in the hexadecimal system?
-
-- Solution: 
-$$(8\times 16^1) +  (11\times 16^0) = 139.$$
-
-
-
-## The hexadecimal system
-
-What is the decimal number 139 expressed in the hexadecimal system?
-
-- Solution: 
-$$(8\times 16^1) +  (11\times 16^0) = 139.$$
-
-- More precisely:
-$$(8\times 16^1) +  (B\times 16^0) = 8B = 139.$$
-
-
-
-## The hexadecimal system
-
-What is the decimal number 139 expressed in the hexadecimal system?
-
-- Solution: 
-$$(8\times 16^1) +  (11\times 16^0) = 139.$$
-
-- More precisely:
-$$(8\times 16^1) +  (B\times 16^0) = 8B = 139.$$
-
-- Hence: `10001011` (in binary) = `8B` (in hexadecimal) = `139` in decimal.
-
-
-
-
-## The hexadecimal system
-Advantages (when working with binary numbers)
-
-1. Shorter than raw binary representation
-2. Much easier to translate forth and back between binary and hexadecimal than binary and decimal.
-
-&nbsp;
-
-<center>
-*WHY?*
-</center>
-
-## The hexadecimal system
-Advantages (when working with binary numbers)... 
-
-- Hexadecimal digits can always be represented in four-digit binary equivalent.
--  $8=1000$, $B=11=1011$, thus...
-- `8B` (in hexadecimal) = `10001011` (`1000 1011`) in binary.
-
-
 # Character Encoding
 
-## Computers and text
-How can a computer understand text if it only understands `0`s and `1`s?
-
-```{r keyboard, echo=FALSE, out.width = "90%", fig.align='center', fig.cap="A modified version of South Korean Dubeolsik (two-set type) for old hangul letters. (Illustration by Yes0song 2010,  [Creative Commons Attribution-Share Alike 3.0 Unported](https://creativecommons.org/licenses/by-sa/3.0/deed.en))", purl=FALSE}
-include_graphics("../img/keyboard.png")
-```
-
 
 ## Computers and text
-How can a computer understand text if it only understands `0`s and `1`s?
 
-- *Standards* define how `0`s and `1`s correspond to specific letters/characters of different human languages.
-- These standards are usually called *character encodings*.
-- Coded character sets that map unique numbers (in the end in binary coded values) to each character in the set.
-
-## Computers and text
 How can a computer understand text if it only understands `0`s and `1`s?
 
 - *Standards* define how `0`s and `1`s correspond to specific letters/characters of different human languages.
@@ -458,14 +171,14 @@ How can a computer understand text if it only understands `0`s and `1`s?
 - For example, ASCII (American Standard Code for Information Interchange).
 
 ```{r ascii, echo=FALSE, out.width = "30%", fig.align='center', fig.cap='ASCII logo. (public domain).', purl=FALSE}
-include_graphics("../img/ascii.gif")
+include_graphics("../../img/ascii.gif")
 ```
 
 
 
 
 
-## ASCII Table
+## ASCII Table (examples)
 
 
 Binary  | Hexadecimal | Decimal | Character 
@@ -477,8 +190,6 @@ Binary  | Hexadecimal | Decimal | Character
 
 ## Character encodings: why should we care?
 
-## Character encodings: why should we care?
- 
  - In practice, Data Science means handling digital data of all formats and shapes.
     - Diverse sources.
     - Different standards.
@@ -498,23 +209,10 @@ Two core themes of this course:
 
   1. How can *data* be *stored* digitally and be *read* by/imported to a computer?
   2. How can we give instructions to a computer by writing *computer code*?
- 
-## Putting the pieces together...
-
-Two core themes of this course:
-
-  1. How can *data* be *stored* digitally and be *read* by/imported to a computer?
-  2. How can we give instructions to a computer by writing *computer code*?
 
 In both of these domains we mainly work with one simple type of document: *text files*.
 
 
-## Text-files
-
- - A *collection of characters* stored in a designated part of the computer memory/hard drive.
- - An easy-to-read representation of the underlying information (`0`s and `1`s)!
-
- 
 ## Text-files
 
  - A *collection of characters* stored in a designated part of the computer memory/hard drive.
@@ -526,153 +224,96 @@ In both of these domains we mainly work with one simple type of document: *text 
  - Typical device to store computer code.
 
 
-## Text-editors: RStudio
+## Text-editors: RStudio, Atom
 
-```{r echo=FALSE, fig.align='center', out.width="45%"}
+```{r echo=FALSE, fig.align='center', out.width="15%"}
 
-include_graphics("../img/rstudio.png")
+include_graphics("../../img/rstudio.png")
 
 ```
-Install RStudio from [here](https://www.rstudio.com/products/rstudio/download/#download)!
 
+```{r echo=FALSE, fig.align='center', out.width="15%"}
 
+include_graphics("../../img/atom.png")
+
+```
+
+Text editors are software tools that help you edit text-files for the purpose of coding/programming and/or for the purpose of storing/editing data in an accessible format.
+
+ - To write a computer program, all you need is a text editor and the interpreter (or compiler), which translates the code (in our case in the R language) into machine code (instructions in 0s and 1s).
+ - To store data in a simple but meaningful way on a computer, all you need is a text editor and a standard/schema which gives the data records some structure.
  
-
-## Text-editors: Atom
-
-```{r echo=FALSE, fig.align='center', out.width="45%"}
-
-include_graphics("../img/atom.png")
-
-```
-Install Atom from [here](https://flight-manual.atom.io/getting-started/sections/installing-atom/)!
+ 
 
 
 
 # Data Processing Basics
-
-----
-
-```{r blackbox2, echo=FALSE, out.width = "75%", fig.align='center', fig.cap= "The 'blackbox' of data processing.", purl=FALSE}
-include_graphics("../img/cpu_blackbox.png")
-```
-
-
 
 
 ## Components of a standard computing environment
 
 &nbsp;
 
-```{r components, echo=FALSE, out.width = "80%", fig.align='center', fig.cap= "Basic components of a standard computing environment.", purl=FALSE}
-include_graphics("../img/script-hardware.jpg")
+```{r components, echo=FALSE, out.width = "70%", fig.align='center', fig.cap= "Basic components of a standard computing environment.", purl=FALSE}
+include_graphics("../../img/script-hardware_w.jpg")
 ```
 
-## Central Processing Unit
-
-&nbsp;
-
-```{r cpu, echo=FALSE, out.width = "10%", fig.align='center', purl=FALSE}
-include_graphics("../img/script-cpu.png")
-```
+## Central Processing Unit (CPU)
 
 ```{r cpu2, echo=FALSE, out.width = "30%", fig.align='center', purl=FALSE}
-include_graphics("../img/cpu.jpg")
+include_graphics("../../img/cpu.jpg")
 ```
 
+The "heart" of the computer. Does the computation. Processes the machine code instructions.
 
 
 
-## Random Access Memory
+## Random Access Memory (RAM)
 
 &nbsp;
 
-```{r ram, echo=FALSE, out.width = "10%", fig.align='center', purl=FALSE}
-include_graphics("../img/script-ram.png")
+```{r ram2, echo=FALSE, out.width = "35%", fig.align='center', purl=FALSE}
+include_graphics("../../img/ram.jpg")
 ```
 
-```{r ram2, echo=FALSE, out.width = "45%", fig.align='center', purl=FALSE}
-include_graphics("../img/ram.jpg")
-```
-
-
-
-## Input hardware: keyboard
-
-&nbsp;
-
-```{r keybd, echo=FALSE, out.width = "15%", fig.align='center', purl=FALSE}
-include_graphics("../img/script-keybd.png")
-```
-
-```{r keyboard2, echo=FALSE, out.width = "45%", fig.align='center', fig.cap="A modified version of South Korean Dubeolsik (two-set type) for old hangul letters. (Illustration by Yes0song 2010,  [Creative Commons Attribution-Share Alike 3.0 Unported](https://creativecommons.org/licenses/by-sa/3.0/deed.en))", purl=FALSE}
-include_graphics("../img/keyboard.png")
-```
-
-
+Holds all the currently needed environments, objects, etc. Provides the currently processed data to the CPU. Is filled, once you start your computer, is emptied once you switch off your computer. Standard data processing techniques rely on the dataset (and more) fitting into RAM (can be an issue when working with large datasets).
 
 
 ## Mass storage: hard drive
 
 &nbsp;
 
-```{r harddrive, echo=FALSE, out.width = "10%", fig.align='center', purl=FALSE}
-include_graphics("../img/script-massstorage.png")
+
+```{r harddrive2, echo=FALSE, out.width = "35%", fig.align='center', purl=FALSE}
+include_graphics("../../img/harddrive.jpg")
 ```
 
-```{r harddrive2, echo=FALSE, out.width = "45%", fig.align='center', purl=FALSE}
-include_graphics("../img/harddrive.jpg")
-```
+This is where the data (and operating system, software, etc.) is stored in the long run. When you boot your computer, the core programs needed to run the computer are loaded from the hard drive into RAM. When you *import* a dataset into R/RStudio, the data is read from a (text-)file stored on the hard drive into RAM. 
 
-
-## Screen: output hardware
-
-&nbsp;
-
-```{r output, echo=FALSE, out.width = "10%", fig.align='center', purl=FALSE}
-include_graphics("../img/script-screen.png")
-```
-
-```{r screen, echo=FALSE, out.width = "55%", fig.align='center', purl=FALSE}
-include_graphics("../img/screen.png")
-```
+Simple example of difference between RAM and hard drive: When you open a new R-Script (or Word-file, etc.), type something in it, this means you write something to an object located somewhere in RAM. If you close the application without saving the file, it will be lost. Once you "save" the script/document, it will be written to the hard drive. 
 
 
 ## Network: Internet, cloud, etc.
 
 &nbsp;
 
-```{r network, echo=FALSE, out.width = "10%", fig.align='center', purl=FALSE}
-include_graphics("../img/script-network.png")
+```{r www, echo=FALSE, out.width = "25%", fig.align='center', purl=FALSE}
+include_graphics("../../img/www.png")
 ```
 
-```{r www, echo=FALSE, out.width = "45%", fig.align='center', purl=FALSE}
-include_graphics("../img/www.png")
-```
+
+With today's abundance of digital data on all kinds of economic activities, many economic research projects rely on either gathering the raw data from web sources and/or on storing the data for analytics purposes on a database or simple storage service in the web/in the cloud. In practice, datasets for analytics purposes are thus often transferred between a web source and the local hard drive, or directly read from a web source into RAM.
 
 
 ## Putting the pieces together...
 
 Recall the initial example (survey) of this course.
 
-  1. Access a website (over the Internet), use keyboard to enter data into a website (a Google sheet in that case). 
+  1. Access a website (over the Internet), use keyboard to enter data into a website (a Google sheet in that case). That is, data is typed into RAM and then transferred over a network connection to a web server, and stored on its hard drive.
 
-  2. R program accesses the data of the Google sheet (again over the Internet), downloads the data, and loads it into RAM.
+  2. An R program accesses the data of the Google sheet (again over the Internet), downloads the data, and loads it into RAM.
 
-  3. Data processing: produce output (in the form of statistics/plots), output on screen.
-
-
+  3. Data processing: an R program is run through the CPU to produce output (in the form of statistics/plots), the output is shown on screen.
 
 
-# Q&A
-
-
-<style>
-slides > slide { overflow: scroll; }
-slides > slide:not(.nobackground):after {
-  content: '';
-}
-</style>
-
-## References {.smaller}
 

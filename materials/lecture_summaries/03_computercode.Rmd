@@ -2,7 +2,6 @@
 title: 'Data Handling: Import, Cleaning and Visualisation'
 subtitle: 'Lecture 3:<br>Data Storage and Data Structures'
 author: "Prof. Dr. Ulrich Matter"
-date: "07/10/2021"
 output:   
   ioslides_presentation:
     css: ../../style/ioslides.css
@@ -20,23 +19,6 @@ library(knitr)
 ```
 
 # Updates
-
-## Decentral exam for exchange students
-(Provisional plan)
-
-- The examination will take place during the *last exercise session (23 December, 4:15 PM - 6:00 PM) in room 01-013.*
-
-- The last exercise session is moved to *December 22, 4:15 PM - 6:00 PM, fully online (Zoom).*
-
-<!-- ## Thoughts on studying in this course -->
-
-<!-- - Read the mandatory (and complementary) literature before lectures (see Syllabus) -->
-<!-- - Follow the lectures (make your own notes) -->
-<!-- - Read the lecture notes (extend with own notes) -->
-<!-- - Solve the exercises (in virtual teams) -->
-<!-- - Study the exercise solutions (notes + video) -->
-<!-- - Visit the exercise Q&A sessions with Philine  -->
-<!-- - Repeat... -->
 
 # Recap
 

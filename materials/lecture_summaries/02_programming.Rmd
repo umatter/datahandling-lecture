@@ -26,6 +26,17 @@ library(knitr)
 ```
 
 
+# Fetch Lecture Materials from GitHub
+
+ 1. Open Nuvolos/RStudio
+ 2. Move to the Terminal window
+ 3. Type/copy-paste the following
+ 
+```{bash eval=FALSE}
+git clone https://github.com/umatter/datahandling-lecture.git
+```
+ 
+ 4. Hit enter
 
 
 
@@ -243,7 +254,7 @@ while (total <= 20) {
 
 
 ## Booleans and logical statements
-```{r}
+```{r eval=FALSE}
 2+2 == 4
 3+3 == 7
 4!=7
@@ -274,8 +285,6 @@ if (condition) {
 ```
 
 
-## Booleans and logical statements
-
 ```{r}
 
 condition <- FALSE
@@ -300,7 +309,7 @@ if (condition) {
 - For example, $2\times X = Y$.
 - R functions take 'parameter values' as input, process those values according to a predefined program, and 'return' the results.
 
-## R functions
+## R functions in packages
 
 - Many functions are provided with R.
 - More can be loaded by installing and loading packages.
@@ -310,6 +319,17 @@ if (condition) {
 install.packages("<PACKAGE NAME>")
 # load a package
 library(<PACKAGE NAME>)
+```
+
+
+## Write functions
+
+The basic R-syntax to write a function is as follows.
+
+```{r eval=FALSE, purl=FALSE}
+myfun <- function(){
+  
+}
 ```
 
 
