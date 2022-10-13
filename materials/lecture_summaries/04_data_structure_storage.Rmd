@@ -2,12 +2,19 @@
 title: 'Data Handling: Import, Cleaning and Visualisation'
 subtitle: 'Lecture 4:<br>Data Storage and Data Structures'
 author: "Prof. Dr. Ulrich Matter"
-output:   
-  ioslides_presentation:
-    css: ../../style/ioslides.css
-    template: ../../style/nologo_template.html
-    mathjax: "default"
-logo: ../../img/logo.png
+output:
+  html_document:
+    highlight: tango
+    theme: cerulean
+    mathjax: "http://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"
+  pdf_document:
+    pandoc_args:
+    - --filter
+    - ../../code/math.py
+header-includes:
+- \usepackage[T1]{fontenc}
+- \usepackage{hyperref}
+css: ../../style/notes_hsg.css
 bibliography: ../../references/datahandling.bib
 ---
 
@@ -18,59 +25,8 @@ options(width = 100)
 library(knitr)
 ```
 
-# Updates
-
-
-
-<!-- ## Thoughts on studying in this course -->
-
-<!-- - Read the mandatory (and complementary) literature before lectures (see Syllabus) -->
-<!-- - Follow the lectures (make your own notes) -->
-<!-- - Read the lecture notes (extend with own notes) -->
-<!-- - Solve the exercises (in virtual teams) -->
-<!-- - Study the exercise solutions (notes + video) -->
-<!-- - Visit the exercise Q&A sessions with Philine  -->
-<!-- - Repeat... -->
 
 # Recap
-
-## The binary system
-
-Microprocessors can only represent two signs (states):
-
- - 'Off' = `0`
- - 'On' = `1`
-
-```{r onoff, echo=FALSE, out.width = "10%", fig.align='center', purl=FALSE}
-include_graphics("../../img/on_off.png")
-```
-
-
-## The binary counting frame
-
-- Only two signs: `0`, `1`.
-- Base 2.
-- Columns: $2^0=1$, $2^1=2$, $2^2=4$, and so forth.
-
-## Decimal numbers in a computer
-
-
-Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1
------|-----|----|----|----|----|----|----|----
-
-
-
-## Decimal numbers in a computer
-
-
-Number  | 128 | 64 | 32 | 16 | 8  | 4  | 2  |  1
------|-----|----|----|----|----|----|----|----
-0  = | 0   |  0 | 0  |  0 | 0 |  0 | 0  |  0
-1  = | 0   |  0 | 0  |  0 | 0 |  0 | 0  |  1
-2  = | 0   |  0 | 0  |  0 | 0 |  0 | 1  |  0
-3  = | 0   |  0 | 0  |  0 | 0 |  0 | 1  |  1
-... |    |   |   |  |  |   |   |
-139 = | 1   |  0 | 0  |  0 |  1 |  0 | 1  |  1
 
 
 ## Computers and text
@@ -88,22 +44,12 @@ include_graphics("../../img/ascii.gif")
 
 
 
-## Digital data processing
-
-&nbsp;
-
-```{r components, echo=FALSE, out.width = "80%", fig.align='center', purl=FALSE}
-include_graphics("../../img/script-hardware.jpg")
-```
-
-
-
 # Computer Code and Data Storage
 
 ## Computer code
 
-  - Instructions to a computer, in a language it understands... (R)
-  - Code is written to *text files*
+  - Instructions to a computer, in a language it understands... (R).
+  - Code is written to *text files*.
   - Text is 'translated' into 0s and 1s which the CPU can process.
 
 ## Data storage
@@ -126,7 +72,7 @@ include_graphics("../../img/script-hardware.jpg")
 
 ## Inspect a text file
 
-Interpreting `0`s and `1`s as text...
+You can use the terminal in RStudio (on Nuvolos) to inspect a text file. Via `cat` you can display the content of a text file interpreted as text (using the system's standard encoding).
 
 ```{bash eval=FALSE}
 cat helloworld.txt; echo
@@ -142,10 +88,7 @@ system("cat helloworld.txt")
 ```
 
 
-
-## Inspect a text file
-
-Directly looking at the `0`s and `1`s...
+With another application called `xxd`, you can directly look at the `0`s and `1`s stored in a file.
 
 ```{bash eval = FALSE}
 xxd -b helloworld.txt
@@ -156,21 +99,12 @@ xxd -b ../../data/helloworld.txt
 ```
 
 
-## Inspect a text file
 
-Similarly we can display the content in hexadecimal values:
-
-
-```{bash eval = FALSE}
-xxd  data/helloworld.txt
-```
-
-```{bash echo = FALSE}
-xxd  ../../data/helloworld.txt
-```
 
 
 ## Encoding issues
+
+If there is a mismatch between the encoding in which a file was created and the encoding used to look at the file, you will likely encounter some unexpected symbols in the middle of the text. Consider the following example:
 
 ```{bash eval=FALSE}
 cat hastamanana.txt; echo
@@ -180,11 +114,7 @@ cat hastamanana.txt; echo
 ## Hasta Ma?ana!
 ```
 
-- What is the problem?
-
-
-## Encoding issues
-Inspect the encoding
+Likely, this text file has not been created with the same character encoding as the one used by your system to interpret the underlying 0s and 1s.
 
 ```{bash eval = FALSE}
 file -b hastamanana.txt
@@ -206,7 +136,7 @@ Read the file again, this time with the correct encoding
 }
 </style>
 
-```{bash eval = FALSE}
+```{eval = FALSE}
 iconv -f iso-8859-1 -t utf-8 hastamanana.txt | cat
 ```
 
@@ -265,19 +195,40 @@ year,gdp_chfb
 *How can we instruct a computer to read this text as a table?*
 </center>
 
----
 
-<h4>A simple parser algorithm</h4>
 
---
+## A simple parser algorithm
 
+  1.  Start with an empty table consisting of one cell (1 row/column).
+  2.  While the end of the input file is not yet reached, do the following:
+
+## A simple parser algorithm
+
+  1.  Start with an empty table consisting of one cell (1 row/column).
+  2.  While the end of the input file is not yet reached, do the following:
+      - Read characters from the input file, and add them one-by-one to the current cell.
+        
+
+## A simple parser algorithm
+
+  1.  Start with an empty table consisting of one cell (1 row/column).
+  2.  While the end of the input file is not yet reached, do the following:
+      - Read characters from the input file, and add them one-by-one to the current cell.
+         - If you encounter the character '`,`', ignore it, create a new field, and jump to the new field.
+
+## A simple parser algorithm
+
+  1.  Start with an empty table consisting of one cell (1 row/column).
+  2.  While the end of the input file is not yet reached, do the following:
+      - Read characters from the input file, and add them one-by-one to the current cell.
+         - If you encounter the character '`,`', ignore it, create a new field, and jump to the new field.
+      - If you encounter the end of the line, create a new row and jump to the new row.
 
 
 ## CSVs and fixed-width format
 
   - *'Comma-Separated Values'* (therefore `.csv`)
     - commas separate values
-    - other delimiters (`;`, tabs, etc.) possible
     - new lines separate rows/observations
     - (many related formats with other separators)
   - Instructions of how to read a `.csv`-file: *CSV parser*.
@@ -289,17 +240,45 @@ year,gdp_chfb
   - Natural format/structure when the dataset can be thought of as a table.
 
 
+## CSVs and fixed-width format
+&nbsp;
 
----
+<center>
+*How does the computer know that the end of a line is reached?*
+</center>
 
-<h4>How does the computer know that the end of a line is reached?</h4>
 
---
 
 <!-- - Let's investigate! -->
 
 
+## End-of-line characters
 
+```{bash eval = FALSE, purl=FALSE}
+xxd ch_gdp.csv
+```
+
+```{bash echo = FALSE}
+xxd ../../data/ch_gdp.csv
+```
+
+
+## End-of-line characters
+
+```{bash eval = FALSE, purl=FALSE}
+xxd ch_gdp.csv
+```
+
+```{bash echo = FALSE}
+xxd ../../data/ch_gdp.csv
+```
+
+ - `.` (`0d`): indicates end of line! 
+
+## Related formats
+ 
+ - Other delimiters (`;`, tabs, etc.)
+ - Fixed (column) width
 
 ## More complex formats
   - N-dimensional data
@@ -311,12 +290,20 @@ year,gdp_chfb
 
 # Units of Information/Data Storage
 
----
+## Bit, Byte
 
-```{r bitbyteword, echo=FALSE, out.width = "80%", fig.align='center',  purl=FALSE}
+  - Smallest unit (a `0` or a `1`): *bit* (from *bi*nary dig*it*; abbrev. 'b').
+  - *Byte* (1 byte = 8 bits; abbrev. 'B')
+    - For example, `10001011` (`139`)
+
+
+
+
+
+
+```{r bitbyteword, echo=FALSE, out.width = "40%", fig.align='center',  purl=FALSE}
 include_graphics("../../img/bitbyte.jpg")
 ```
-
 
 ## Bigger units for storage capacity 
 
@@ -324,11 +311,6 @@ include_graphics("../../img/bitbyte.jpg")
  - $1 \text{ megabyte (MB)} = 1000^{2} \text{ bytes}$
  - $1 \text{ gigabyte (GB)} = 1000^{3} \text{ bytes}$
  
-<!-- ## Common units for data transfer (over a network) -->
-
-<!--  - $1 \text{ kilobit per second (kbit/s)} = 1000^{1} \text{ bit/s}$ -->
-<!--  - $1 \text{ megabit per second (mbit/s)} = 1000^{2} \text{ bit/s}$ -->
-<!--  - $1 \text{ gigabit per second (gbit/s)} = 1000^{3} \text{ bit/s}$ -->
 
 
 
@@ -343,14 +325,7 @@ include_graphics("../../img/bitbyte.jpg")
 - Representation of data in RAM (e.g. as an R-object)?
   - What is the representation of the 'structure' once the data is parsed (read into RAM)?
 
-## Structures to work with (in R)
 
-We distinguish two basic characteristics:
-
-  1. Data **types**: integers; real numbers ('numeric values', floating point numbers); text ('string', 'character values').
-
-    
-    
 ## Structures to work with (in R)
 
 We distinguish two basic characteristics:
@@ -379,9 +354,6 @@ class(a)
 ```
 
 
-## Data types: numeric
-
-
 Given that these bytes of data are interpreted as numeric, we can use operators (here: math operators) that can work with such functions:
 
 ```{r}
@@ -406,7 +378,7 @@ class(a)
 
 ## Data types: character
 
-Now the same line of code as above will result in an error:
+With data type character, R interprets the values as text. Consequently, the same line of code as above will result in an error:
 
 ```{r error=TRUE}
 a + b
@@ -416,13 +388,11 @@ a + b
 
 ## Data structures: vectors
 
-```{r numvec, echo=FALSE, out.width = "10%", fig.align='center', purl=FALSE}
+```{r numvec, echo=FALSE, out.width = "5%", fig.align='center',purl=FALSE}
 include_graphics("../../img/numvec.png")
 ```
 
-## Data structures: vectors
-
-Example:
+Examples in R: initiate a character vector and an integer vector with three elements (vectors of "length" 3).
 
 ```{r}
 persons <- c("Andy", "Brian", "Claire")
@@ -437,38 +407,27 @@ ages
 
 ## Data structures: factors
 
-```{r factor, echo=FALSE, out.width = "10%", fig.align='center',  purl=FALSE}
+```{r factor, echo=FALSE, out.width = "5%", fig.align='center',  purl=FALSE}
 include_graphics("../../img/factor.png")
 ```
 
-## Data structures: factors
 
-Example:
+Example in R: initiate a factor variable based on a character vector. 
 
 ```{r}
 gender <- factor(c("Male", "Male", "Female"))
 gender
 ```
 
-
+What is the difference between this definition as a factor and the simple definition as a character vector? Factors are typically used to work with categorical variables. Under the hood, R stores the labels of each category (here: `"Male"` or `"Female"`), and then refers to factor elements via category ids. This makes the storage and filtering/access of categorical variables much more efficient (in particular, if there are very long/complex category names/labels contained in the data). Many of the high-level functions you will work with later in the course (e.g. to visualize data) expect you to define categorical variables in a dataset explicitly with factors. 
 
 ## Data structures: matrices
 
-```{r matrix, echo=FALSE, out.width = "30%", fig.align='center', purl=FALSE}
+```{r matrix, echo=FALSE, out.width = "10%", fig.align='center', purl=FALSE}
 include_graphics("../../img/matrix.png")
 ```
 
-## Data structures: arrays
-
-
-```{r array, echo=FALSE, out.width = "40%", fig.align='center', purl=FALSE}
-include_graphics("../../img/array.jpg")
-```
-
-
-## Data structures: matrices/arrays
-
-Example:
+Example in R: initialize a matrix with three rows and two columns.
 
 ```{r}
 my_matrix <- matrix(c(1,2,3,4,5,6), nrow = 3)
@@ -476,8 +435,17 @@ my_matrix
 
 ```
 
+From the code example we see that R considers matrices essentially as two-dimensional vectors. We first initiate a vector and then define in how many rows/columns this vector of values should be organized. Importantly, like vectors, matrices can only contain values of the same data type.
 
-## Data structures: matrices/arrays
+## Data structures: arrays
+
+
+```{r array, echo=FALSE, out.width = "20%", fig.align='center', purl=FALSE}
+include_graphics("../../img/array.jpg")
+```
+
+Example in R: initialize a three-dimensional array.
+
 
 ```{r}
 my_array <- array(c(1,2,3,4,5,6,7,8), dim = c(2,2,2))
@@ -485,18 +453,18 @@ my_array
 
 ```
 
+Arrays in R are very similar to matrices. Essentially, they just allow us to store data in more than two dimensions (via the `dim`-parameter). Importantly, like vectors/matrices, arrays can only contain values of the same data type.
+
 
 ## Data frames, tibbles, and data tables
  
 
-```{r df, echo=FALSE, out.width = "40%", fig.align='center',  purl=FALSE}
+```{r df, echo=FALSE, out.width = "20%", fig.align='center',  purl=FALSE}
 include_graphics("../../img/dataframe.jpg")
 ```
 
 
-## Data frames, tibbles, and data tables
-
-Example: 
+Example in R: initiate a data frame with the three columns "person", "age", and "gender".
 
 ```{r}
 df <- data.frame(person = persons, age = ages, gender = gender)
@@ -504,47 +472,25 @@ df
 
 ```
 
+Data frames/tibbles are the typical object class to store entire datasets for data analytics purposes in R. Columns of a data frames can contain vectors of different data types. However, each of the columns must contain the same number of elements. In a data analytics context, we often refer to the columns as the "variables" in a dataset and the rows as the "observations" of a data set. Variables describe the characteristics of the observations.
 
 ## Data structures: lists
 
-```{r list, echo=FALSE, out.width = "40%", fig.align='center', purl=FALSE}
+
+```{r list, echo=FALSE, out.width = "20%", fig.align='center', purl=FALSE}
 include_graphics("../../img/list.jpg")
 ```
 
 
-## Data structures: lists
-
-Example:
+Example in R: initiate a list containing an array, a matrix, and a data frame.
 
 ```{r}
 my_list <- list(my_array, my_matrix, df)
 my_list
 ```
 
+Lists are the most flexible general object class in R to store data. Each element of a list can contain different types of objects/data, and the length of each element can differ.
 
 
 
-
-
-# Q&A
-
-
-<style>
-slides > slide { overflow: scroll; }
-slides > slide:not(.nobackground):after {
-  content: '';
-}
-
-
-code {
-  color: white;
-}
-
-
-pre {
-  color: white;
-}
-</style>
-
-## References {.smaller}
 
