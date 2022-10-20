@@ -1,0 +1,649 @@
+---
+title: 'Data Handling: Import, Cleaning and Visualisation'
+subtitle: 'Lecture 5:<br>Webdata, Text, and Images'
+author: "Prof. Dr. Ulrich Matter"
+output:   
+  ioslides_presentation:
+    css: ../../style/ioslides.css
+    template: ../../style/nologo_template.html
+    mathjax: "default"
+logo: ../../img/logo.png
+bibliography: ../../references/datahandling.bib
+---
+
+
+
+```{r set-options, echo=FALSE, cache=FALSE, warning=FALSE}
+options(width = 100)
+library(knitr)
+```
+
+
+<style>
+pre {
+  font-size: 21px;
+}
+</style>
+
+
+# Updates
+
+
+
+# Recap
+
+
+## Structured Data Formats
+
+  - Still text files, but with standardized *structure*.
+  - *Special characters* define the structure.
+  - More complex *syntax*, more complex structures can be represented...
+
+
+## Structures to work with (in R)
+
+We distinguish two basic characteristics:
+
+  1. Data *types*: integers; real numbers ('numeric values', floating point numbers); text ('string', 'character values').
+  2. Basic *data structures* in RAM:
+      - *Vectors*
+      - *Factors*
+      - *Arrays/Matrices*
+      - *Lists*
+      - *Data frames* (very `R`-specific)
+
+
+# Web Data, Complex Data Structures
+
+## A rectangular data set
+
+```
+father mother  name     age  gender
+               John      33  male
+               Julia     32  female
+John   Julia   Jack       6  male
+John   Julia   Jill       4  female
+John   Julia   John jnr   2  male
+               David     45  male
+               Debbie    42  female
+David  Debbie  Donald    16  male
+David  Debbie  Dianne    12  female
+
+```
+
+<center>
+*What is the data about?*
+</center>
+
+
+## A rectangular data set
+
+```
+father mother  name     age  gender
+               John      33  male
+               Julia     32  female
+John   Julia   Jack       6  male
+John   Julia   Jill       4  female
+John   Julia   John jnr   2  male
+               David     45  male
+               Debbie    42  female
+David  Debbie  Donald    16  male
+David  Debbie  Dianne    12  female
+
+```
+<center>
+*Which observations belong together?*
+</center>
+
+
+## A rectangular data set
+
+```
+father mother  name     age  gender
+               John      33  male
+               Julia     32  female
+John   Julia   Jack       6  male
+John   Julia   Jill       4  female
+John   Julia   John jnr   2  male
+               David     45  male
+               Debbie    42  female
+David  Debbie  Donald    16  male
+David  Debbie  Dianne    12  female
+
+```
+<center>
+*Can a parser understand which observations belong together?*
+</center>
+
+
+
+  
+
+
+# Deciphering XML
+
+## Revisiting COVID-19 data
+
+```
+dateRep,day,month,year,cases,deaths,countriesAndTerritories,geoId,countryterritoryCode,popData2019,continentExp,Cumulative_number_for_14_days_of_COVID-19_cases_per_100000
+14/10/2020,14,10,2020,66,0,Afghanistan,AF,AFG,38041757,Asia,1.94523087
+13/10/2020,13,10,2020,129,3,Afghanistan,AF,AFG,38041757,Asia,1.81116766
+12/10/2020,12,10,2020,96,4,Afghanistan,AF,AFG,38041757,Asia,1.50361089
+```
+
+## Revisiting COVID-19 data (in XML!)
+
+
+```
+<records>
+<record>
+<dateRep>14/10/2020</dateRep>
+<day>14</day>
+<month>10</month>
+<year>2020</year>
+<cases>66</cases>
+<deaths>0</deaths>
+<countriesAndTerritories>Afghanistan</countriesAndTerritories>
+<geoId>AF</geoId>
+<countryterritoryCode>AFG</countryterritoryCode>
+<popData2019>38041757</popData2019>
+<continentExp>Asia</continentExp>
+<Cumulative_number_for_14_days_of_COVID-19_cases_per_100000>1.94523087</Cumulative_number_for_14_days_of_COVID-19_cases_per_100000>
+</record>
+<record>
+<dateRep>13/10/2020</dateRep>
+
+...
+</records>
+```
+
+
+
+## Revisiting COVID-19 (in XML!)
+
+
+```
+<records>
+<record>
+<dateRep>14/10/2020</dateRep>
+<day>14</day>
+<month>10</month>
+<year>2020</year>
+<cases>66</cases>
+<deaths>0</deaths>
+<countriesAndTerritories>Afghanistan</countriesAndTerritories>
+<geoId>AF</geoId>
+<countryterritoryCode>AFG</countryterritoryCode>
+<popData2019>38041757</popData2019>
+<continentExp>Asia</continentExp>
+<Cumulative_number_for_14_days_of_COVID-19_cases_per_100000>1.94523087</Cumulative_number_for_14_days_of_COVID-19_cases_per_100000>
+</record>
+<record>
+<dateRep>13/10/2020</dateRep>
+
+...
+</records>
+```
+
+<center>
+*What features does the format have? What is it's logic/syntax?*
+</center>
+
+
+## XML syntax
+
+
+```{xml}
+<records>
+<record>
+<dateRep>14/10/2020</dateRep>
+<day>14</day>
+<month>10</month>
+<year>2020</year>
+<cases>66</cases>
+<deaths>0</deaths>
+<countriesAndTerritories>Afghanistan</countriesAndTerritories>
+<geoId>AF</geoId>
+<countryterritoryCode>AFG</countryterritoryCode>
+<popData2019>38041757</popData2019>
+<continentExp>Asia</continentExp>
+<Cumulative_number_for_14_days_of_COVID-19_cases_per_100000>1.94523087</Cumulative_number_for_14_days_of_COVID-19_cases_per_100000>
+</record>
+<record>
+<dateRep>13/10/2020</dateRep>
+
+...
+</records>
+```
+
+
+
+
+## XML syntax
+
+The actual content we know from the csv-type example above is nested between the '`records`'-tags:
+
+```{xml}
+  <records>
+...
+  </records>
+```
+
+
+## XML syntax: Temperature Data example
+
+There are two principal ways to link variable names to values.
+```{xml}
+    <variable>Monthly Surface Clear-sky Temperature (ISCCP) (Celsius)</variable>
+    <filename>ISCCPMonthly_avg.nc</filename>
+    <filepath>/usr/local/fer_data/data/</filepath>
+    <badflag>-1.E+34</badflag>
+    <subset>48 points (TIME)</subset>
+    <longitude>123.8W(-123.8)</longitude>
+    <latitude>48.8S</latitude>
+    <case date="16-JAN-1994" temperature="9.200012" />
+    <case date="16-FEB-1994" temperature="10.70001" />
+    <case date="16-MAR-1994" temperature="7.5" />
+    <case date="16-APR-1994" temperature="8.100006" />
+```
+
+
+## XML syntax
+
+
+1. Define opening and closing XML-tags with the variable name and surround the value with them, such as in `<filename>ISCCPMonthly_avg.nc</filename>`.
+2. Encapsulate the values within one tag by defining tag-attributes such as in `<case date="16-JAN-1994" temperature="9.200012" />`. 
+
+## XML syntax
+
+Attributes-based:
+```{xml}
+    <case date="16-JAN-1994" temperature="9.200012" />
+    <case date="16-FEB-1994" temperature="10.70001" />
+    <case date="16-MAR-1994" temperature="7.5" />
+    <case date="16-APR-1994" temperature="8.100006" />
+```
+
+## XML syntax
+
+Tag-based:
+
+```{xml}
+  <cases>    
+    <case>
+      <date>16-JAN-1994<date/>
+      <temperature>9.200012<temperature/>
+    <case/>
+    <case>
+      <date>16-FEB-1994<date/>
+      <temperature>10.70001<temperature/>
+    <case/>
+    <case>
+      <date>16-MAR-1994<date/>
+      <temperature>7.5<temperature/>
+    <case/>
+    <case>
+      <date>16-APR-1994<date/>
+      <temperature>8.100006<temperature/>
+    <case/>
+  <cases/>
+```
+
+
+
+
+## Insights: CSV vs. XML
+
+ - Represent much more *complex (multi-dimensional)* data in XML-files than what is possible in CSVs.
+ - Self-explanatory syntax: *machine-readable and human-readable*. 
+ - Tags are part of the syntax, give both structure and name variables.
+
+
+
+
+# Deciphering JSON
+
+## JSON syntax
+  
+  - Key difference to XML: no tags, but *attribute-value pairs*.
+  - A substitute for XML (often encountered in similar usage domains).
+
+
+
+----
+
+<div class="columns-1">
+*XML:*
+```{xml}
+<person>
+  <firstName>John</firstName>
+  <lastName>Smith</lastName>
+  <age>25</age>
+  <address>
+    <streetAddress>21 2nd Street</streetAddress>
+    <city>New York</city>
+    <state>NY</state>
+    <postalCode>10021</postalCode>
+  </address>
+  <phoneNumber>
+    <type>home</type>
+    <number>212 555-1234</number>
+  </phoneNumber>
+  <phoneNumber>
+    <type>fax</type>
+    <number>646 555-4567</number>
+  </phoneNumber>
+  <gender>
+    <type>male</type>
+  </gender>
+</person>
+
+```
+
+
+----
+
+<div class="columns-2">
+*XML:*
+```{xml}
+<person>
+  <firstName>John</firstName>
+  <lastName>Smith</lastName>
+  <age>25</age>
+  <address>
+    <streetAddress>21 2nd Street</streetAddress>
+    <city>New York</city>
+    <state>NY</state>
+    <postalCode>10021</postalCode>
+  </address>
+  <phoneNumber>
+    <type>home</type>
+    <number>212 555-1234</number>
+  </phoneNumber>
+  <phoneNumber>
+    <type>fax</type>
+    <number>646 555-4567</number>
+  </phoneNumber>
+  <gender>
+    <type>male</type>
+  </gender>
+</person>
+
+```
+
+*JSON:*
+```{json}
+{"firstName": "John",
+  "lastName": "Smith",
+  "age": 25,
+  "address": {
+    "streetAddress": "21 2nd Street",
+    "city": "New York",
+    "state": "NY",
+    "postalCode": "10021"
+  },
+  "phoneNumber": [
+    {
+      "type": "home",
+      "number": "212 555-1234"
+    },
+    {
+      "type": "fax",
+      "number": "646 555-4567"
+    }
+  ],
+  "gender": {
+    "type": "male"
+  }
+}
+
+```
+
+
+----
+
+<div class="columns-2">
+*XML:*
+```{xml}
+<person>
+  <firstName>John</firstName>
+  <lastName>Smith</lastName>
+ 
+</person>
+
+```
+
+*JSON:*
+```{json}
+{"firstName": "John",
+  "lastName": "Smith",
+
+}
+
+```
+
+</div>
+
+
+---
+
+
+```{r echo=FALSE, fig.align="center", out.width="90%"}
+include_graphics("../../img/hierarch_data_dark.jpg")
+```
+
+
+
+
+# HTML: Websites
+
+## HTML: Code to build webpages
+
+[HyperText Markup Language (HTML)](https://en.wikipedia.org/wiki/HTML), designed to be read by a web browser. 
+
+
+```{r echo=FALSE, fig.align="center", out.width="60%"}
+include_graphics("../../img/website_screen.jpg")
+```
+
+
+## HTML documents contain data!
+
+
+```{r echo=FALSE, fig.align="center", out.width="70%"}
+include_graphics("../../img/website_data.png")
+```
+
+
+
+
+## HTML documents: code and data!
+
+HTML documents/webpages consist of *'semi-structured data'*: 
+  
+  - A webpage can contain a HTML-table (*structured data*)...
+  - ...but likely also contains just raw text (*unstructured data*).
+
+----
+
+```{html}
+     <!DOCTYPE html>
+
+     <html>
+         <head>
+             <title>hello, world</title>
+         </head>
+         <body>
+             <h2> hello, world </h2>
+         </body>
+     </html>
+```
+
+<center>
+*Similarities to other formats?*
+</center>
+
+
+
+
+## HTML document as a 'tree'
+
+```{r dom, echo=FALSE, fig.align="center", out.width="60%"}
+include_graphics("../../img/dom_tree_dark.jpg")
+```
+
+
+## Two ways to read a webpage into R
+
+In this example, we look at [Wikipedia's Economy of Switzerland page](https://en.wikipedia.org/wiki/Economy_of_Switzerland).
+
+```{r swiss, echo=FALSE, out.width = "50%", fig.align='center', fig.cap= "Source: https://en.wikipedia.org/wiki/Economy_of_Switzerland."}
+include_graphics("../../img/1_SwissGDP.png")
+```
+
+
+
+
+# Text as Data
+
+## Handling text data for analysis
+
+
+```{r nlppipeline, echo=FALSE, out.width = "95%", fig.align='center',  purl=FALSE}
+include_graphics("../../img/nlp_pipeline_dark.jpg")
+```
+
+## Data structure: text corpus
+
+
+```{r corpus, echo=FALSE, out.width = "35%", fig.align='center',  purl=FALSE}
+include_graphics("../../img/text_corpus_dark.jpg")
+```
+
+
+## Working with text data in R: Quanteda
+
+
+```{r packages, echo=FALSE}
+# Install/load packages
+pacman::p_load(
+    tidytext,
+    quanteda,
+    readtext,
+    stringr,
+    quanteda.textstats,
+    quanteda.textplots
+)
+```
+
+
+# Image Data
+
+
+## Basic data structures
+
+ - *Raster images*: a matrix of pixels, as well as the color of each pixel.
+ - *Vector-based images*: text files that store the coordinates of points on a surface and how these dots are connected (or not) by lines.
+
+## Raster images
+
+```{r rgb, echo=FALSE, out.width = "75%", fig.align='center', purl=FALSE}
+include_graphics("../../img/rgb_structure.jpg")
+```
+
+## Raster and vector images in R
+
+
+
+## Use cases in economic research and beyond
+
+ - Extract text from historical documents (scan, use OCR)
+ - Use machine learning to label text (too costly to do manually)
+ - Extract information from maps
+
+
+# Computer vision, auto-encoders, "creative AI"
+
+## "Donald Trump riding a donkey while eating pizza"
+
+
+## "Donald Trump riding a donkey while eating pizza"
+
+
+```{r echo=FALSE, fig.align="center", out.width="65%"}
+include_graphics("../../img/trump_donkey_pizza1.jpg")
+```
+
+
+## "Donald Trump riding a donkey while eating pizza"
+
+
+```{r echo=FALSE, fig.align="center", out.width="65%"}
+include_graphics("../../img/trump_donkey_pizza2.jpg")
+```
+
+
+## "Donald Trump riding a donkey while eating pizza"
+
+
+```{r echo=FALSE, fig.align="center", out.width="65%"}
+include_graphics("../../img/trump_donkey_pizza3.jpg")
+```
+
+
+
+## "Data Cleaning"
+
+
+```{r echo=FALSE, fig.align="center", out.width="65%"}
+include_graphics("../../img/data_cleaning1.jpg")
+```
+
+
+## "Data Cleaning"
+
+
+```{r echo=FALSE, fig.align="center", out.width="65%"}
+include_graphics("../../img/data_cleaning2.jpg")
+```
+
+
+
+## "A large pile of data"
+
+```{r echo=FALSE, fig.align="center", out.width="65%"}
+include_graphics("../../img/large_pile_data.JPG")
+```
+
+
+## "A person analyzing economic data"
+
+
+```{r echo=FALSE, fig.align="center", out.width="65%"}
+include_graphics("../../img/person_economic_data_analysis.JPG")
+```
+
+
+
+# Q&A
+
+
+<style>
+slides > slide { overflow: scroll; }
+slides > slide:not(.nobackground):after {
+  content: '';
+}
+
+
+code {
+  color: white;
+}
+
+
+pre {
+  color: white;
+}
+</style>
+
+## References {.smaller}
+

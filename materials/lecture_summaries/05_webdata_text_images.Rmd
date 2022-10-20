@@ -1,0 +1,793 @@
+---
+title: 'Data Handling: Import, Cleaning and Visualisation'
+subtitle: 'Lecture 5:<br>Webdata, Text, and Images'
+author: "Prof. Dr. Ulrich Matter"
+output:
+  html_document:
+    highlight: tango
+    theme: cerulean
+    mathjax: "http://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"
+  pdf_document:
+    pandoc_args:
+    - --filter
+    - ../../code/math.py
+header-includes:
+- \usepackage[T1]{fontenc}
+- \usepackage{hyperref}
+css: ../../style/notes_hsg.css
+bibliography: ../../references/datahandling.bib
+---
+
+
+
+
+
+```{r set-options, echo=FALSE, cache=FALSE, warning=FALSE}
+options(width = 100)
+library(knitr)
+```
+
+
+# Recap
+
+## Structured Data Formats
+
+  - Still text files, but with standardized *structure*.
+  - *Special characters* define the structure.
+  - More complex *syntax*, more complex structures can be represented...
+
+## CSVs and fixed-width format
+
+  - Common format to store and transfer data.
+    - Very common in a data analysis context.
+  - Natural format/structure when data represents a table.
+
+
+
+## Structures to work with (in R)
+
+We distinguish two basic characteristics:
+
+  1. Data *types*: integers; real numbers ('numeric values', floating point numbers); text ('string', 'character values').
+  2. Basic *data structures* in RAM:
+      - *Vectors*
+      - *Factors*
+      - *Arrays/Matrices*
+      - *Lists*
+      - *Data frames* (very `R`-specific)
+
+
+# Complex Data Structures
+
+## A rectangular data set
+
+```
+father mother  name     age  gender
+               John      33  male
+               Julia     32  female
+John   Julia   Jack       6  male
+John   Julia   Jill       4  female
+John   Julia   John jnr   2  male
+               David     45  male
+               Debbie    42  female
+David  Debbie  Donald    16  male
+David  Debbie  Dianne    12  female
+
+```
+
+- Not entirely clear which observations "belong together".
+- Might be better represented in another format that allows for *hierarchical structures*.
+- "Hierarchy" in this example/context would mean, there are records of families (higher level), each family consists of several persons, each of these persons has a number of characteristics (such as age, name, etc.).
+
+
+## Limitations of rectangular data
+
+- Only *two dimensions*.
+    - Observations (rows)
+    - Characteristics/variables (columns)
+- Hard to represent hierarchical structures.
+    - Might introduce redundancies.
+    - Machine-readability suffers (standard parsers won't recognize it).
+  
+
+  
+## Alternative formats
+
+- [JavaScript Object Notation (JSON)](https://en.wikipedia.org/wiki/JSON)
+- [Extensible Markup Language (XML)](https://en.wikipedia.org/wiki/XML)
+- Origin and most common domain of application: The Web!
+    - Need to *transfer* complex data (between machines).
+    - Need to *embed* complex data (in human friendly layout).
+
+
+
+
+# Deciphering XML
+
+## Revisiting COVID-19 data
+
+Recall the COVID-19 data you have worked with as part of the exercises. We can store this data in the form of a CSV file as illustrated below.
+Commas separate columns, new lines separate rows, and the first row contains the column/variable names.
+
+```
+dateRep,day,month,year,cases,deaths,countriesAndTerritories,geoId,countryterritoryCode,popData2019,continentExp,Cumulative_number_for_14_days_of_COVID-19_cases_per_100000
+14/10/2020,14,10,2020,66,0,Afghanistan,AF,AFG,38041757,Asia,1.94523087
+13/10/2020,13,10,2020,129,3,Afghanistan,AF,AFG,38041757,Asia,1.81116766
+12/10/2020,12,10,2020,96,4,Afghanistan,AF,AFG,38041757,Asia,1.50361089
+```
+
+## Revisiting COVID-19 data (in XML!)
+
+The same data can also be stored as an XML file. The first few lines of this file could look like this:
+
+```{xml}
+<records>
+<record>
+<dateRep>14/10/2020</dateRep>
+<day>14</day>
+<month>10</month>
+<year>2020</year>
+<cases>66</cases>
+<deaths>0</deaths>
+<countriesAndTerritories>Afghanistan</countriesAndTerritories>
+<geoId>AF</geoId>
+<countryterritoryCode>AFG</countryterritoryCode>
+<popData2019>38041757</popData2019>
+<continentExp>Asia</continentExp>
+<Cumulative_number_for_14_days_of_COVID-19_cases_per_100000>1.94523087</Cumulative_number_for_14_days_of_COVID-19_cases_per_100000>
+</record>
+<record>
+<dateRep>13/10/2020</dateRep>
+
+...
+</records>
+```
+
+
+- A predefined set of special characters (here primarily `<`, `>`, and `/` ) give the data structure. 
+- So-called *XML-tags* are used to define variable names and encapsulate data values: `<variablename>value</variablename>`.
+- Tags can be nested, which allows for the definition of hierarchical structures.
+
+For example, the entire COVID-19 dataset content we know from the csv example above is nested between the '`records`'-tags:
+
+```{xml}
+  <records>
+...
+  </records>
+```
+
+- In this example,  *`records`* is the "root-element" of the XML-document).
+- *`records`* contains several *`record`* elements, which in turn contain several tags/variables describing a unique record (such as `year`). 
+
+
+## XML syntax: attribute-based or tag-based
+
+
+There are two principal ways to link variable names and data values in XML: 
+
+ 1. Values are stored between tags: `<variablename>value</variablename>`. In the example below: `<filename>ISCCPMonthly_avg.nc</filename>`.
+ 2. Values are stored as XML-attributes (key-value pairs) within tags: `<observation variablename="value">`. In the example below: `<case date="16-JAN-1994" temperature="9.200012" />`
+
+
+```{xml}
+    <variable>Monthly Surface Clear-sky Temperature (ISCCP) (Celsius)</variable>
+    <filename>ISCCPMonthly_avg.nc</filename>
+    <filepath>/usr/local/fer_data/data/</filepath>
+    <badflag>-1.E+34</badflag>
+    <subset>48 points (TIME)</subset>
+    <longitude>123.8W(-123.8)</longitude>
+    <latitude>48.8S</latitude>
+    <case date="16-JAN-1994" temperature="9.200012" />
+    <case date="16-FEB-1994" temperature="10.70001" />
+    <case date="16-MAR-1994" temperature="7.5" />
+    <case date="16-APR-1994" temperature="8.100006" />
+```
+
+
+The same information can be stored either way, as the following example shows:
+
+Attributes-based:
+
+```{xml}
+    <case date="16-JAN-1994" temperature="9.200012" />
+    <case date="16-FEB-1994" temperature="10.70001" />
+    <case date="16-MAR-1994" temperature="7.5" />
+    <case date="16-APR-1994" temperature="8.100006" />
+```
+
+
+Tag-based:
+
+```{xml}
+  <cases>    
+    <case>
+      <date>16-JAN-1994<date/>
+      <temperature>9.200012<temperature/>
+    <case/>
+    <case>
+      <date>16-FEB-1994<date/>
+      <temperature>10.70001<temperature/>
+    <case/>
+    <case>
+      <date>16-MAR-1994<date/>
+      <temperature>7.5<temperature/>
+    <case/>
+    <case>
+      <date>16-APR-1994<date/>
+      <temperature>8.100006<temperature/>
+    <case/>
+  <cases/>
+```
+
+
+
+## Insights: CSV vs. XML
+
+Note the key differences of storing data in XML format in contrast to a flat, table-like format such as CSV:
+
+ - Represent much more *complex (multi-dimensional)* data in XML-files than what is possible in CSVs. 
+    - Arbitrarily complex nesting structure.
+    - Flexibility to label tags.
+ - Self-explanatory syntax: *machine-readable and human-readable*. 
+    - Parsers/computers can more easily handle complex data structures.
+    - Humans can intuitively understand what the data is all about just by looking at the raw XML file.
+
+Potential drawback of XML: *inefficient* storage:
+
+  - Tags are part of the syntax, thus, part of the actual file.
+      - Tags (variable labels) are *repeated* again and again!
+      - CSV: variable labels are mentioned once.
+      - Potential solution: data compression (e.g., zip).
+  - If the data is actually two dimensional, a CSV is more practical.
+  
+
+## JSON vs XML syntax
+  
+  - Key difference to XML: no tags, but *attribute-value pairs*.
+  - A substitute for XML (often encountered in similar usage domains).
+
+The following two data samples show the same information once stored in an XML file and once in a JSON file:
+
+<div class="columns-2">
+*XML:*
+```{xml}
+<person>
+  <firstName>John</firstName>
+  <lastName>Smith</lastName>
+  <age>25</age>
+  <address>
+    <streetAddress>21 2nd Street</streetAddress>
+    <city>New York</city>
+    <state>NY</state>
+    <postalCode>10021</postalCode>
+  </address>
+  <phoneNumber>
+    <type>home</type>
+    <number>212 555-1234</number>
+  </phoneNumber>
+  <phoneNumber>
+    <type>fax</type>
+    <number>646 555-4567</number>
+  </phoneNumber>
+  <gender>
+    <type>male</type>
+  </gender>
+</person>
+
+```
+
+*JSON:*
+```{json}
+{"firstName": "John",
+  "lastName": "Smith",
+  "age": 25,
+  "address": {
+    "streetAddress": "21 2nd Street",
+    "city": "New York",
+    "state": "NY",
+    "postalCode": "10021"
+  },
+  "phoneNumber": [
+    {
+      "type": "home",
+      "number": "212 555-1234"
+    },
+    {
+      "type": "fax",
+      "number": "646 555-4567"
+    }
+  ],
+  "gender": {
+    "type": "male"
+  }
+}
+
+```
+
+
+Data structured according to either XML or JSON syntax can be thought of as following a tree-like structure:
+
+```{r echo=FALSE, fig.align="center", out.width="90%"}
+include_graphics("../../img/hierarch_data.jpg")
+```
+
+
+
+
+
+
+<!-- # Parsing XML and JSON in R -->
+
+<!-- ## Parsing XML in R -->
+
+<!-- The following examples are based on the example code shown above (the two text-files `persons.json` and `persons.xml`) -->
+
+
+<!-- ```{r eval=FALSE, purl=FALSE } -->
+<!-- # load packages -->
+<!-- library(xml2) -->
+
+<!-- # parse XML, represent XML document as R object -->
+<!-- xml_doc <- read_xml("persons.xml") -->
+<!-- xml_doc -->
+
+<!-- ``` -->
+
+
+<!-- ```{r echo=FALSE, purl=FALSE } -->
+<!-- # load packages -->
+<!-- library(xml2) -->
+
+<!-- # parse XML, represent XML document as R object -->
+<!-- xml_doc <- read_xml("../../data/persons.xml") -->
+<!-- xml_doc -->
+
+<!-- ``` -->
+
+<!-- ## Parsing JSON in R -->
+
+
+<!-- ```{r eval=FALSE, purl=TRUE} -->
+<!-- # load packages -->
+<!-- library(jsonlite) -->
+
+<!-- # parse the JSON-document shown in the example above -->
+<!-- json_doc <- fromJSON("persons.json") -->
+
+<!-- # check the structure -->
+<!-- str(json_doc) -->
+
+<!-- ``` -->
+
+
+<!-- ```{r echo=FALSE, purl=FALSE} -->
+<!-- # load packages -->
+<!-- library(jsonlite) -->
+
+<!-- # parse the JSON-document shown in the example above -->
+<!-- json_doc <- fromJSON("../../data/persons.json") -->
+
+<!-- # check the structure -->
+<!-- str(json_doc) -->
+
+<!-- ``` -->
+
+
+
+
+# HTML: Computer Code Meets Data
+
+## HTML: Code to build webpages
+
+[HyperText Markup Language (HTML)](https://en.wikipedia.org/wiki/HTML) is designed to be read and rendered by a web browser. Yet, web pages (HTML-documents) also contain tables, raw text, and images and thus they are also a file format to store data.
+
+  - Web designer's perspective: "HTML is a tool to design the layout of a webpage (and the resulting HTML document is *code*)." 
+  - From a data scientist's perspective: "HTML gives the *data* contained in a webpage (the actual content) a certain degree of structure which can be exploited to systematically extract the data from the webpage."
+  - HTML documents/webpages consist of *'semi-structured data'*: 
+     - A webpage can contain a HTML-table (*structured data*)...
+     - ...but likely also contains just raw text (*unstructured data*).
+
+
+
+
+The following short HTML-file constitues a very simple web page:
+
+```{html}
+     <!DOCTYPE html>
+
+     <html>
+         <head>
+             <title>hello, world</title>
+         </head>
+         <body>
+             <h2> hello, world </h2>
+         </body>
+     </html>
+```
+
+
+##  Characteristics of HTML
+1. *Annotate/'mark up'* data/text (with tags)
+     -  Defines *structure* and hierarchy
+     -  Defines content (pictures, media)
+
+2. *Nesting* principle
+     - `head` and `body` are nested within the `html` document
+     - Within the `head`, we define the `title`, etc.
+     
+3. Expresses what is what in a document. 
+     - Doesn't explicitly 'tell' the computer what to do
+     - HTML is a markup language, not a programming language.
+     
+
+## HTML document as a 'tree'
+
+- 'Root': `<html>..</html>`
+- 'Children' of the root node: `<head>...</head>`, `<body>...</body>`
+- 'Siblings' of each other: `<head>...</head>`, `<body>...</body>`
+
+
+```{r dom, echo=FALSE, fig.align="center", out.width="50%", fig.cap="HTML (DOM) tree diagram."}
+include_graphics("../../img/dom_tree.jpg")
+```
+
+
+## Two ways to read a webpage into R
+
+In this example, we look at [Wikipedia's Economy of Switzerland page](https://en.wikipedia.org/wiki/Economy_of_Switzerland).
+
+```{r swiss, echo=FALSE, out.width = "50%", fig.align='center', fig.cap= "Source: https://en.wikipedia.org/wiki/Economy_of_Switzerland."}
+include_graphics("../../img/1_SwissGDP.png")
+```
+
+
+
+### Read the HTML line-by-line
+
+```{r}
+swiss_econ <- readLines("https://en.wikipedia.org/wiki/Economy_of_Switzerland")
+```
+
+Look at the first few imported lines:
+
+```{r}
+head(swiss_econ)
+```
+
+Select specific lines (select specific parts of the data):
+
+```{r}
+swiss_econ[231]
+```
+
+
+
+## Parse the HTML!
+
+- Navigate the document like an XML document!
+  - Same logic (but tags are pre-defined)...
+  - Traverse the tree.
+- Access specific parts of the contained data directly.
+- *Make use of the structure!*
+
+## Parsing a Webpage with R
+
+
+```{r echo=FALSE}
+# install package if not yet installed
+# install.packages("rvest")
+
+# load the package
+library(rvest)
+```
+
+
+```{r eval=FALSE, purl=FALSE}
+# install package if not yet installed
+# install.packages("rvest")
+
+# load the package
+library(rvest)
+```
+
+
+```{r}
+# parse the webpage, show the content
+swiss_econ_parsed <- read_html("https://en.wikipedia.org/wiki/Economy_of_Switzerland")
+swiss_econ_parsed
+```
+
+## Parsing a Webpage with R
+
+Now we can easily separate the data/text from the html code. For example, we can extract the HTML table containing the data we are interested in as a `data.frames`.
+
+```{r}
+tab_node <- html_node(swiss_econ_parsed,
+                      xpath = "//*[@id='mw-content-text']/div/table[2]")
+tab <- html_table(tab_node)
+tab
+```
+
+
+
+# Text as Data
+
+## Handling text data for analysis
+
+First few steps in a text analysis/natural language processing (NLP) pipeline:
+
+ 1. Data acquisition: text data are collected from disparate sources. Examples are webpage scrapping, numerization of old administrative records, collection of tweets through an API, etc. 
+ 2.Text cleaning. 
+ 3. Text preprocessing require the analyst to prepare the text in such a way that text information can be read by a statistical software. At this step, text information is "transformed" into a matrix. 
+ 4. Feature engineering is the process of using domain knowledge to extract features (characteristics, properties, attributes) from raw data.
+
+```{r nlppipeline, echo=FALSE, out.width = "95%", fig.align='center',  purl=FALSE}
+include_graphics("../../img/nlp_pipeline.jpg")
+```
+
+
+
+## Working with text data in R: Quanteda
+
+The package `quanteda` is the most complete and go-to package for text analysis in R. In order to run  `quanteda`, several packages need to be installed. You can use the following command to make sure that missing packages are installed.
+
+```{r packages, echo=FALSE}
+pacman::p_load(
+    tidytext,
+    quanteda,
+    readtext,
+    stringr,
+    quanteda.textstats,
+    quanteda.textplots
+)
+```
+
+
+### From raw text to corpus: step (1)
+
+The base, raw material, of quantitative text analysis is a **corpus**. A corpus is, in NLP, *a collection of authentic text organized into datasets*. 
+
+```{r corpus, echo=FALSE, out.width = "25%", fig.align='center',  purl=FALSE}
+include_graphics("../../img/text_corpus.jpg")
+```
+
+
+In the specific case of `quanteda`, a corpus is a **a data frame consisting of a character vector for documents, and additional vectors for document-level variables**. In other words, a corpus is a data frame that contains, in each row, a text document, and additional columns with the corresponding metadata about the text.
+
+In the examples below, we will use the `inauguration` corpus from `quanteda`, which is a standard corpus used in introductory text analysis. It contains the inauguration discourses of the five first US presidents. This text data can be loaded from the `readtext` package. The metadata of this corpus is the year of the inauguration and the name of the president taking office.
+
+```{r inauguration}
+# set path
+path_data <- system.file("extdata/", package = "readtext")
+
+# import csv file
+dat_inaug <- read.csv(paste0(path_data, "/csv/inaugCorpus.csv"))
+names(dat_inaug)
+
+# Create a corpus
+corp <- corpus(dat_inaug, text_field = "texts")
+print(corp)
+
+# Look at the metadata in the corpus using `docvars`
+docvars(corp)
+
+# In quanteda, the metadata in a corpus can be handled like data frames.
+docvars(corp, field = "Century") <- floor(docvars(corp, field = "Year") / 100) + 1
+```
+
+\
+
+
+### From corpus to tokens: steps (2) and (3)
+
+Once we have a corpus, we want to extract the substance of the text. This means, in `quanteda` language, that we want to extract **tokens**, i.e. to isolate the elements that constitute a corpus in order to quantify them. Basically, tokens are expressions that form the building blocks of the text. Tokens can be single words or phrases (several subsequent words, so-called *N-grams*).
+
+
+
+```{r tokens}
+toks <- tokens(corp)
+head(toks[[1]], 20)
+
+# Remove punctuation
+toks <- tokens(corp, remove_punct = TRUE)
+head(toks[[1]], 20)
+
+# Remove stopwords
+stopwords("en")
+toks <- tokens_remove(toks, pattern = stopwords("en"))
+head(toks[[1]], 20)
+
+# We can keep words we are interested in
+tokens_select(toks, pattern = c("peace", "war", "great*", "unit*"))
+
+# Remove "fellow" and "citizen"
+toks <- tokens_remove(toks, pattern = c(
+    "fellow*",
+    "citizen*",
+    "senate",
+    "house",
+    "representative*",
+    "constitution"
+))
+
+# Build N-grams (onegrams, bigrams, and 3-grams)
+toks_ngrams <- tokens_ngrams(toks, n = 2:3)
+
+# Build N-grams based on a structure: keep n-grams that containt a "not"
+toks_neg_bigram_select <- tokens_select(toks_ngrams, pattern = phrase("never_*"))
+head(toks_neg_bigram_select[[1]], 30)
+```
+
+\
+
+### From tokens to document-term-matrix (dtm): steps (3) and (4)
+
+ - To make our collection of tokens usable for quantitative analysis, we turn the collection of tokens into a document-term-matrix (dtm, also known as document-feature-matrix, dfm). 
+ - dtms have as rows the document, and as columns the tokens. They contain the count frequency, or sometimes an indicator for whether a given token appears in a document. 
+ 
+To create a dtm, we can use `quanteda`'s `dfm` command, as shown below. 
+
+```{r dfm}
+dfmat <- dfm(toks)
+print(dfmat)
+```
+
+- Our dtm has five rows for our five documents, and 6,694 (!) columns. Each column is a single token. The dtm is 79.88% sparse, which means that 79.88% of the cells are 0. 
+- Because our dtm is too large and not informative, we want to trim it and remove columns based on their frequencies. When removing tokens that appear less than two times, we are left with a dtm of 72 columns. 
+
+```{r dfm clean}
+dfmat <- dfm(toks)
+dfmat <- dfm_trim(dfmat, min_termfreq = 2) # remove tokens that appear less than 1 times
+```
+
+\ 
+
+### From dtm to analysis and insights
+
+ - Dtms are the basis of all text analyses. 
+ - They are used to train machine learning methods to predict the sentiment of a text, to classify the documents into clusters, to retrieve missing information, or to predict the autorship. 
+ - Very basic statistics about documents are the **top features** of each document, the frequency of expressions in the corpus
+
+```{r stats}
+topfeatures(dfmat, 10)
+
+# compute word frequencies as top feature
+tstat_freq <- textstat_frequency(dfmat, n = 5)
+
+# visualize frequencies in word cloud
+textplot_wordcloud(dfmat, max_words = 100)
+```
+
+
+
+# Image Data
+
+
+## Basic data structure
+
+ - There are two important variants of storing digital images: *raster-based images* (for example, jpg files), and *vector-based images* (for example, eps files).
+ - Raster image: a matrix of pixels, as well as the color of each pixel.
+ - Vector-based images: text files that store the coordinates of points on a surface and how these dots are connected (or not) by lines.
+
+### Raster images
+ - Images are stored as arrays $X\times Y\times Z$ ($X$ and $Y$ define the number of pixels in each column and row, $Z$ defines the number of layers.)
+ - Greyscale images usually have only one layer, whereas most colored images have 3 layers. 
+ - For RGB-Images, which are the most common format of colored images, the layers define the intensity of red, green, and blue of each pixel.
+
+
+```{r rgb, echo=FALSE, out.width = "75%", fig.align='center', fig.cap= "(ref:rgb)", purl=FALSE}
+include_graphics("../../img/rgb_structure.jpg")
+```
+
+### Vector images
+
+- Textfiles using a hierarchical data structure to define the shapes, colors and coordinates of the objects shown in an image. 
+- Typically used for computer drawings, plots, maps, and blueprints of technical infrastructure. 
+- Typically based on a syntax that is similar to or a version of XML. 
+
+
+## Raster-images in R
+
+```{r}
+# Load two common packages
+library(raster) # for raster images
+library(magick) # for wide range of raster and vector-based images 
+```
+
+We can generate images directly in R by populating arrays and saving the plots to disk.
+
+### Generating a red image (RGB code: 255,0,0)
+```{r}
+# Step 1: Define the width and height of the image
+width = 300; 
+height = 300
+
+# Step 2: Define the number of layers (RGB = 3)
+layers = 3
+
+# Step 3: Generate three matrices corresponding to Red, Green, and Blue values
+red = matrix(255, nrow = height, ncol = width)
+green = matrix(0, nrow = height, ncol = width)
+blue = matrix(0, nrow = height, ncol = width)
+
+# Step 4: Generate an array by combining the three matrices
+image.array = array(c(red, green, blue), dim = c(width, height, layers))
+dim(image.array)
+
+# Step 5: Create RasterBrick
+image = brick(image.array)
+print(image)
+
+# Step 6: Plot RGB
+plotRGB(image)
+
+# Step 7: (Optional) Save to disk
+png(filename = "red.png", width = width, height = height, units = "px")
+plotRGB(image)
+dev.off()
+```
+
+
+## Vector-images in R
+
+
+```{r}
+# Common Packages for Vector Files
+library(xml2)
+
+# Download and read svg image from url
+URL <- "https://upload.wikimedia.org/wikipedia/commons/1/1b/R_logo.svg"
+Rlogo_xml <- read_xml(URL)
+
+# Data structure
+Rlogo_xml 
+xml_structure(Rlogo_xml)
+
+# Raw data
+Rlogo_text <- as.character(Rlogo_xml)
+
+# Plot
+svg_img = image_read_svg(Rlogo_text)
+image_info(svg_img)
+```
+
+
+```{r eval=FALSE}
+svg_img
+```
+
+```{r rlogo, echo=FALSE, out.width = "15%", fig.align='center',  purl=FALSE}
+include_graphics("../../img/R_logo.svg.png")
+```
+
+
+
+### Use case: Optical Character Recognition (OCR)
+
+- Common context to encounter image data in empirical economic research is the digitization of old texts. 
+- Optical character recognition (OCR) is used to extract text from scanned images. 
+- R provides a straightforward approach to OCR in which the input is an image file (e.g., a png-file) and the output is a character string.
+
+
+```{r, message=FALSE, warning=FALSE}
+
+# For Optical Character Recognition
+library(tesseract)
+
+# fetch and show image
+img <- image_read("https://s3.amazonaws.com/libapps/accounts/30502/images/new_york_times.png")
+print(img)
+
+# zoom in on headline
+headline <- 
+  image_crop(image = img, geometry = '806x180')
+
+headline
+
+# Extract text via OCR
+headline_text <- image_ocr(headline)
+cat(headline_text)
+
+```
+
+
