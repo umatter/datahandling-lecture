@@ -7,6 +7,8 @@
 
 # SET UP -----------------
 
+# install.packages(c("raster", "magick", "xml2", "rsvg", "tesseract"))
+
 # load/install packages
 library(raster) # for raster images
 library(magick) # for wide range of raster and vector-based images 

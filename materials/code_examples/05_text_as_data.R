@@ -10,6 +10,7 @@
 # SET UP -----------------
 
 # load/install packages
+# install.packages("pacman") # run this if not yet installed.
 pacman::p_load(
      tidytext,
      quanteda,
@@ -18,6 +19,9 @@ pacman::p_load(
      quanteda.textstats,
      quanteda.textplots
 )
+library(quanteda)
+library(quanteda.textplots)
+library(quanteda.textstats)
 
 
 
