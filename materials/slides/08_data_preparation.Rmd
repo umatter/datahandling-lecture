@@ -7,8 +7,8 @@ output:
     css: ../../style/ioslides.css
     template: ../../style/nologo_template.html
     mathjax: "default"
-logo: ../img/logo.png
-bibliography: ../references/datahandling.bib
+logo: ../../img/logo.png
+bibliography: ../../references/datahandling.bib
 ---
 
 
@@ -26,14 +26,14 @@ pre {
 </style>
 
 
-# Updates
+# Status
 
 
+---
 
-## Additional online material
-
-- Hint: [tidyverse](https://www.tidyverse.org/blog/)!
-- Hint: [R for Data Science Online Learning Community](https://github.com/rfordatascience)!
+```{r pipeline, echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE}
+include_graphics("../../img/data_science_pipeline.png")
+```
 
 
 # Recap: Data Import
@@ -46,13 +46,6 @@ pre {
 - HTML (a markup language to define the structure and layout of webpages)
 - Unstructured text
 
-
-## Sources/formats in economics
-
-- Excel spreadsheets (`.xls`)
-- Formats specific to statistical software packages (SPSS: `.sav`, STATA: `.dat`, etc.)
-- Built-in R datasets
-- Binary formats
 
 
 ## A Template/Blueprint
@@ -133,29 +126,6 @@ swiss
 - Parsers in `read_csv()` guess the data *types*.
 
 
-## Parsing CSV-columns
-
-
-```{r}
-library(readr)
-
-read_csv('A,B
-         12:00, 12:00
-         14:30, midnight
-         20:01, noon')
-```
-
-
-
-## Parsing CSV-columns: guess types
-
-Under the hood `read_csv()` used the `guess_parser()`- function to determine which type the two vectors likely contain:
-
-```{r}
-guess_parser(c("12:00", "midnight", "noon"))
-guess_parser(c("12:00", "14:30", "20:01"))
-```
-
 
 # Data Preparation/Munging/Wrangling
 
@@ -188,7 +158,7 @@ Following @wickham_2014:
 ## Tidy data
 
 ```{r tidydata, echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE, fig.cap="Tidy data. Source: @wickham_grolemund2017, licensed under the [Creative Commons Attribution-Share Alike 3.0 United States](https://creativecommons.org/licenses/by-nc-nd/3.0/us/) license."}
-include_graphics("../img/tidy-1.png")
+include_graphics("../../img/tidy-1.png")
 ```
 
 ## Data preparation in R (`tidyverse`)
