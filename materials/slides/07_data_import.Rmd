@@ -7,8 +7,8 @@ output:
     css: ../../style/ioslides.css
     template: ../../style/nologo_template.html
     mathjax: "default"
-logo: ../img/logo.png
-bibliography: ../references/datahandling.bib
+logo: ../../img/logo.png
+bibliography: ../../references/datahandling.bib
 ---
 
 
@@ -39,7 +39,7 @@ library(knitr)
 library(magrittr)
 library(kableExtra)
 
-sched <- read_xlsx("../../../admin/2021/schedule.xlsx", col_types = "text")
+sched <- read_xlsx("../../../admin/2022/schedule.xlsx", col_types = "text")
 
 #kable(sched[1:7, c(1,5)], format = "markdown")
 ```
@@ -47,120 +47,47 @@ sched <- read_xlsx("../../../admin/2021/schedule.xlsx", col_types = "text")
 
 
 ```{r echo = FALSE}
-kable(sched[12:14, c(1,5)], format = "markdown") 
+kable(sched[12:15, c(1,5)], format = "markdown") 
 ```
 
 ## Part III: Analysis, visualisation, output {.smaller}
 
 ```{r echo = FALSE}
-kable(sched[15:nrow(sched), c(1,5)], format = "markdown") 
+kable(sched[16:nrow(sched), c(1,5)], format = "markdown") 
 ```
 
 
 
-<!-- # Recap: Programming with Data -->
-
-
-<!-- ## Loops -->
-<!-- - Repeatedly execute a sequence of commands. -->
-<!-- - Known or unknown number of iterations. -->
-<!-- - Types: 'for-loop' and 'while-loop'. -->
-<!--      - 'for-loop': number of iterations typically known. -->
-<!--      - 'while-loop: number of iterations typically not known. -->
-
-<!-- ## for-loop -->
-
-<!-- ```{r echo=FALSE, fig.align='center', out.width="40%"} -->
-<!-- include_graphics("../img/forloop_black.png") -->
-<!-- ``` -->
-
-<!-- ## while-loop -->
-
-<!-- ```{r while, echo= FALSE, fig.align="center", out.width="45%"} -->
-<!-- include_graphics("../img/while_loop_black_own.png") -->
-<!-- ``` -->
+# Work with Data
 
 
 
-
-<!-- ## Booleans and logical statements -->
-<!-- ```{r} -->
-<!-- 2+2 == 4 -->
-<!-- 3+3 == 7 -->
-<!-- 4!=7 -->
-
-<!-- ``` -->
-
-
-<!-- ## Booleans and logical statements -->
-<!-- ```{r} -->
-
-<!-- condition <- TRUE -->
-
-<!-- if (condition) { -->
-<!--      print("This is true!") -->
-<!-- } else { -->
-<!--      print("This is false!") -->
-<!-- } -->
-
-
-<!-- ``` -->
-
-
-
-<!-- ## R functions -->
-
-<!-- - $f:X \rightarrow Y$ -->
-<!-- - 'Take a variable/parameter value $X$ as input and provide value $Y$ as output' -->
-<!-- - For example, $2\times X = Y$. -->
-<!-- - R functions take 'parameter values' as input, process those values according to a predefined program, and 'return' the results. -->
-
-<!-- ## R functions -->
-
-<!-- ```{r} -->
-<!-- # define our own function to compute the mean, given a numeric vector -->
-<!-- my_mean <- function(x) { -->
-<!--      x_bar <- sum(x) / length(x) -->
-<!--      return(x_bar) -->
-<!-- } -->
-<!-- ``` -->
-
-
-
-# "Putting it all Together"
-
-## Putting it all together
-
-  - You know what *'data'* is...
-  - You know how digital data is *stored*...
-  - You know how to write *computer code*...
-  - You know the basics of *programming in R*...
-  - You know the basics of *statistics*...
-  - You have *basic domain knowledge* (in Econ/Business)...
-
-
-<center>
-*These are the basics to handle data properly!*
-</center>
-
-<center>
-*This is the basis of data science!*
-</center>
-
-
-## We are ready to start the data science journey
-
-```{r echo=FALSE, fig.align='center', out.width="95%"}
-include_graphics("../img/data_science_pipeline.png")
+```{venn echo=FALSE, fig.align='center', out.width="95%"}
+include_graphics("../../img/venn_diagramm.png")
 ```
 
 
 
-## Sources/formats in economics
+---
 
-<!-- show examples from applied research -->
+```{pipeline echo=FALSE, fig.align='center', out.width="95%"}
+include_graphics("../../img/data_science_pipeline.png")
+```
 
-## Sources/formats in economics
+
+
+## Data sources
+
+<img src="../../img/mentimeter_qr_code.jpg" alt="menti" width="400"/>
+
+Or, go to www.menti.com and use the code 58 42 49 4,
+
+or visit the direct link: 
+https://www.menti.com/al1a9ehfkofo
+
+
+
+## Formats/data structures in economics
 
 - CSV (typical for rectangular/table-like data)
 - Variants of CSV (tab-delimited, fix length etc.)
@@ -168,7 +95,7 @@ include_graphics("../img/data_science_pipeline.png")
 - HTML (a markup language to define the structure and layout of webpages)
 - Unstructured text
 
-## Sources/formats in economics
+## Formats/data structures in economics
 
 
 - Excel spreadsheets (`.xls`)
@@ -644,6 +571,43 @@ json_doc$gender$type
 
 ```
 
+
+# Encoding Issues
+
+## Recognize the problem
+
+```{r}
+FILE <- "../../data/hastamanana.txt"
+hasta <- readLines(FILE)
+hasta
+```
+
+(`readLines()` simply reads the content of a text file line by line.)
+
+## Guess encoding
+
+- Recall that there are no meta data in csv or plain text file informing you about the encoding.
+- If no other information is available, we need to make an educated guess.
+- `readr` provides a function that does just that: `guess_encoding()`
+
+```{r}
+guess_encoding(FILE)
+```
+
+
+## Handling encoding issues
+
+- `inconv()`: convert a character vector `from` one encoding `to` another encoding.
+- Use the guessed encoding for the `from` argument
+
+```{r}
+iconv(hasta, from = "ISO-8859-2", to = "UTF-8")
+```
+
+
+```{r}
+iconv(hasta, from = "ISO-8859-1", to = "UTF-8")
+```
 
 
 # Tutorial (advanced): Importing data from a HTML table 
