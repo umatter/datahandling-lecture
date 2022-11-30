@@ -30,7 +30,6 @@ OUTPUT_PATH <- "data/divided_gov.csv"
 
 ```
 
-
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 # SETUP ------------------
 
@@ -55,7 +54,9 @@ tab <- html_table(doc,fill=TRUE)[[2]]
 tab <- tab[-nrow(tab), ] # remove last row (not containing data)
 ```
 
-Now we clean the data to get a data set more suitable for data analysis. Note that the original table contains information per congress (2-year periods). However, as the sample above shows, we aim for a panel at the year level. The following code iterates through the rows of the data frame and generates for each row per congress several two rows  (one for each year in the congress).^[See `?strsplit`, `?unlist`, and [this introduction to regular expressions](https://www.oreilly.com/content/an-introduction-to-regular-expressions/) for the background of how this is done in the code example here.]
+Now we clean the data to get a data set more suitable for data analysis. Note that the original table contains information per congress (2-year periods). However, as the sample above shows, we aim for a panel at the year level. The following code iterates through the rows of the data frame and generates for each row per congress several two rows (one for each year in the congress).[^1]
+
+[^1]: See `?strsplit`, `?unlist`, and [this introduction to regular expressions](https://www.oreilly.com/content/an-introduction-to-regular-expressions/) for the background of how this is done in the code example here.
 
 ```{r}
 # generate year-level data. frame
@@ -92,11 +93,3 @@ head(allyears)
 write_csv(allyears, file=OUTPUT_PATH)
 
 ```
-
-
-
-
-
-
-
-

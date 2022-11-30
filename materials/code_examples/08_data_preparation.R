@@ -98,59 +98,145 @@ str(messy_df)
 
 
 
+################################################################
+# BREAK --------------------------
+################################################################
+
+
+
+# Reshaping datasets: introductory example/concept -----------------------------
+
+# load example data
+rawdata <- read.csv("data/treatments.csv")
+
+# inspect data
+rawdata
+
+
+# reshape from wide to long
+tidydata <- pivot_longer(data = rawdata, 
+                         cols = c("treatmenta", "treatmentb"),
+                         names_to = "treatment",
+                         names_prefix = "treatment",
+                         values_to = "result")
+
+# inspect result
+tidydata
 
 
 
 
 
 
+# Wide to Long --------------------------------------------
 
 
-
-
-
-
-## ----echo=FALSE, warning=FALSE, message=FALSE----------------------------
-tidydata <- gather(data = rawdata, treatmenta, treatmentb, key = "treatment", value = "result" )
-tidydata$treatment <- gsub("treatment", "", tidydata$treatment)
-
-
-
-
-## ------------------------------------------------------------------------
+## initialize and inspect a wide example data-frame
 wide_df <- data.frame(last_name = c("Wayne", "Trump", "Marx"),
-                       first_name = c("John", "Melania", "Karl"),
-                       gender = c("male", "female", "male"),
-                       income.2018 = c("150000", "250000", "10000"),
+                      first_name = c("John", "Melania", "Karl"),
+                      gender = c("male", "female", "male"),
+                      income.2018 = c("150000", "250000", "10000"),
                       income.2017 = c( "140000", "230000", "15000"),stringsAsFactors = FALSE)
 wide_df
 
 
-## ------------------------------------------------------------------------
-long_df <- gather(wide_df, income.2018, income.2017, key = "year", value = "income")
+
+
+
+
+
+
+
+
+
+# transform from wide to long
+long_df <- pivot_longer(wide_df, 
+                        c(income.2018, income.2017),
+                        names_to = "year",
+                        names_prefix = "income.",
+                        values_to = "income")
+# inspect the result
 long_df
 
 
-## ------------------------------------------------------------------------
-long_df$year <- str_replace(long_df$year, "income.", "")
-long_df
 
 
-## ------------------------------------------------------------------------
-weird_df <- data.frame(last_name = c("Wayne", "Trump", "Marx", "Wayne", "Trump", "Marx", 
-                                        "Wayne", "Trump", "Marx"),
-                       first_name = c("John", "Melania", "Karl", "John", "Melania", "Karl", 
-                                        "John", "Melania", "Karl"),
-                       gender = c("male", "female", "male", "male", "female", "male", 
-                                        "male", "female", "male"),
-                       value = c("150000", "250000", "10000", "2000000", "5000000", "NA", 
-                                        "50", "25", "NA"),
-                       variable = c( "income", "income", "income", "assets", "assets", "assets", 
-                                        "age", "age", "age"), stringsAsFactors = FALSE)
+
+
+
+
+# Long to wide -------------------------------------------
+
+# initiate a weird long data.frame
+weird_df <- data.frame(last_name = c("Wayne", "Trump", "Marx",
+                                     "Wayne", "Trump", "Marx",
+                                     "Wayne", "Trump", "Marx"),
+                       first_name = c("John", "Melania", "Karl",
+                                      "John", "Melania", "Karl",
+                                      "John", "Melania", "Karl"),
+                       gender = c("male", "female", "male",
+                                  "male", "female", "male",
+                                  "male", "female", "male"),
+                       value = c("150000", "250000", "10000",
+                                 "2000000", "5000000", "NA",
+                                 "50", "25", "NA"),
+                       variable = c("income", "income", "income",
+                                    "assets", "assets", "assets",
+                                    "age", "age", "age"),
+                       stringsAsFactors = FALSE)
+
+
+# inspect it, where are the problems?
 weird_df
 
 
-## ------------------------------------------------------------------------
-tidy_df <- spread(weird_df, key = "variable", value = "value")
+# transform from long to wide
+tidy_df <- pivot_wider(weird_df,
+                       names_from = "variable",
+                       values_from = "value")
+
+# inspect result
 tidy_df
+
+
+
+
+
+
+
+# Stacking/Row binding -------------------------------------------
+
+
+# initialize and inspect sample subsets
+# initialize
+subset1 <- data.frame(ID=c(1,2),
+                      X=c("a", "b"),
+                      Y=c(50,10))
+
+subset2 <- data.frame(ID=c(3,4),
+                      Z=c("M", "O"))
+
+subset3 <- data.frame(ID= c(5),
+                      X=c("c"),
+                      Z="P")
+
+# inspect
+str(subset1)
+str(subset2)
+str(subset3)
+
+
+# combine/stack
+# install if needed
+# install.packages("dplyr")
+
+# load packages
+library(dplyr)
+
+# stack data frames
+combined_df <- bind_rows(subset1, subset2, subset3)
+
+# inspect the result
+combined_df
+
 

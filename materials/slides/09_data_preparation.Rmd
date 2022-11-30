@@ -1,6 +1,6 @@
 ---
 title: 'Data Handling: Import, Cleaning and Visualisation'
-subtitle: 'Lecture 8:<br>Data Preparation'
+subtitle: 'Lecture 9:<br>Data Preparation'
 author: "Prof. Dr. Ulrich Matter"
 output:   
   ioslides_presentation:
@@ -46,6 +46,13 @@ include_graphics("../../img/data_science_pipeline.png")
 - HTML (a markup language to define the structure and layout of webpages)
 - Unstructured text
 
+## Parsing CSVs
+
+- Recall the introduction to data structures and data types in R
+- How does R represent data in RAM?
+    - *Structure*: `data.frame`/`tibble`, etc.
+    - *Types*: `character`, `numeric`, etc.
+- Parsers in `read_csv()` guess the data *types*.
 
 
 ## A Template/Blueprint
@@ -73,61 +80,32 @@ OUTPUT_FILE <- "/final_data/datafile.csv"
 ```
 
 
-## Script sections
 
-Finally we add sections with the actual code (in the case of a data import script, maybe one section per data source)
+# Goals for today
 
-```{r eval=FALSE}
-#######################################################################
-# Project XY: Data Gathering and Import
-#
-# This script is the first part of the data pipeline of project XY.
-# It imports data from ...
-# Input: links to data sources (data comes in ... format)
-# Output: cleaned data as CSV
-#
-# U. Matter, St.Gallen, 2019
-#######################################################################
+## Goals for today: cognitive goals
+
+- Recognize where the problems are in a given dataset, and what is in the way of a proper analysis of the data.
+- Organize your work: what needs to be addressed first?
+
+## Goals for today: skills
+
+- Use simple string-operations to clean text variables.
+- Reshape datasets from wide to long (and vice versa).
+- Apply row-binding/stacking of datasets
 
 
-# SET UP --------------
-# load packages
-library(tidyverse)
-
-# set fix variables
-INPUT_PATH <- "/rawdata"
-OUTPUT_FILE <- "/final_data/datafile.csv"
 
 
-# IMPORT RAW DATA FROM CSVs -------------
+# Data Preparation
 
-
-```
-
-
-## Parsing CSVs
-
-Recognizing columns and rows is one thing...
-
-```{r}
-swiss
-```
+---
 
 <center>
-*What else did `read_csv()` recognize?*
+![](../../img/ds_matrix.png)
 </center>
 
-## Parsing CSVs
 
-- Recall the introduction to data structures and data types in R
-- How does R represent data in RAM?
-    - *Structure*: `data.frame`/`tibble`, etc.
-    - *Types*: `character`, `numeric`, etc.
-- Parsers in `read_csv()` guess the data *types*.
-
-
-
-# Data Preparation/Munging/Wrangling
 
 ## The dataset is imported, now what?
 
@@ -142,10 +120,19 @@ swiss
 - *Key conditions*:
   1. Data values are consistent/clean within each variable.
   2. Variables are of proper data types.
-  3. Dataset is in 'tidy' (in long format)!
+  3. Dataset is in 'tidy' (in long format, more on this after the break)!
+
+
+## Move to Nuvolos
+
+<center>
+![](../../img/nuvolos.png)
+</center>
+
+
   
 
-## Some vocabulary
+## Tidy data: some vocabulary
 
 Following @wickham_2014:
 
@@ -161,7 +148,27 @@ Following @wickham_2014:
 include_graphics("../../img/tidy-1.png")
 ```
 
-## Data preparation in R (`tidyverse`)
+## Reshaping: the concept
+
+```{r widetolong, echo=FALSE, out.width = "65%", fig.align='center',  purl=FALSE}
+include_graphics("../../img/reshape2_dark.png")
+```
+
+
+## Stack/row-bind: the concept
+
+```{r rowbinding, echo=FALSE, out.width = "55%", fig.align='center', purl=FALSE}
+include_graphics("../../img/rowbinding_dark.png")
+```
+
+
+
+## Move to Nuvolos
+
+<center>
+![](../../img/nuvolos.png)
+</center>
+
 
 # Q&A
 
