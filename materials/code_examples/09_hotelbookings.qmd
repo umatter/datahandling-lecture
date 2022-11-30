@@ -8,68 +8,26 @@ This tutorial guides you step-by-step through the cleaning script (with a few ad
 
 The aim of the tutorial is to get the data in the form needed for the following plot.
 
-```{r echo=FALSE, purl=FALSE, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(feasts)
 
-# fix variables
-url_h1 <- "https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-11/H1.csv"
-url_h2 <- "https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-11/H2.csv"
-
-
-
-# resort hotel
-h1 <- read_csv(url_h1) %>%
-  janitor::clean_names() %>%
-  mutate(hotel = "Resort Hotel") %>%
-  select(hotel, everything())
-
-# city hotel
-h2 <- read_csv(url_h2) %>%
-  janitor::clean_names() %>%
-  mutate(hotel = "City Hotel") %>%
-  select(hotel, everything())
-
-hotel_df <- bind_rows(h1, h2)
-
-hotel_plot <- hotel_df %>%
-  filter(hotel == "City Hotel") %>%
-  mutate(date = glue::glue("{arrival_date_year}-{arrival_date_month}-{arrival_date_day_of_month}"),
-         date = parse_date(date, format = "%Y-%B-%d")) %>%
-  select(date, everything()) %>%
-  arrange(date) %>%
-  count(date) %>%
-  rename(daily_bookings = n) %>%
-  tsibble::as_tsibble() %>%
-  model(STL(daily_bookings ~ season(window = Inf))) %>%
-  components() %>% autoplot()
-
-ggsave("../../img/hotel_plot.png", device = "png")
-
-include_graphics("../../img/hotel_plot.png")
-
-
-```
+![Hotel Bookings Plot](images/hotel_plot.png){fig-align="center"}
 
 The first few rows and columns of the final dataset should combine the two source datasets and look as follows:
 
-```{}
-# A tibble: 6 × 32
-  hotel      is_canceled lead_time arrival_date_ye… arrival_date_mo… arrival_date_we… arrival_date_da… stays_in_weeken…
-  <chr>            <dbl>     <dbl>            <dbl> <chr>                       <dbl>            <dbl>            <dbl>
-1 Resort Ho…           0       342             2015 July                           27                1                0
-2 Resort Ho…           0       737             2015 July                           27                1                0
-3 Resort Ho…           0         7             2015 July                           27                1                0
-4 Resort Ho…           0        13             2015 July                           27                1                0
-5 Resort Ho…           0        14             2015 July                           27                1                0
-6 Resort Ho…           0        14             2015 July                           27                1                0
-# … with 24 more variables: stays_in_week_nights <dbl>, adults <dbl>, children <dbl>, babies <dbl>, meal <chr>,
-#   country <chr>, market_segment <chr>, distribution_channel <chr>, is_repeated_guest <dbl>,
-#   previous_cancellations <dbl>, previous_bookings_not_canceled <dbl>, reserved_room_type <chr>,
-#   assigned_room_type <chr>, booking_changes <dbl>, deposit_type <chr>, agent <chr>, company <chr>,
-#   days_in_waiting_list <dbl>, customer_type <chr>, adr <dbl>, required_car_parking_spaces <dbl>,
-#   total_of_special_requests <dbl>, reservation_status <chr>, reservation_status_date <date>
-```
+    # A tibble: 6 × 32
+      hotel      is_canceled lead_time arrival_date_ye… arrival_date_mo… arrival_date_we… arrival_date_da… stays_in_weeken…
+      <chr>            <dbl>     <dbl>            <dbl> <chr>                       <dbl>            <dbl>            <dbl>
+    1 Resort Ho…           0       342             2015 July                           27                1                0
+    2 Resort Ho…           0       737             2015 July                           27                1                0
+    3 Resort Ho…           0         7             2015 July                           27                1                0
+    4 Resort Ho…           0        13             2015 July                           27                1                0
+    5 Resort Ho…           0        14             2015 July                           27                1                0
+    6 Resort Ho…           0        14             2015 July                           27                1                0
+    # … with 24 more variables: stays_in_week_nights <dbl>, adults <dbl>, children <dbl>, babies <dbl>, meal <chr>,
+    #   country <chr>, market_segment <chr>, distribution_channel <chr>, is_repeated_guest <dbl>,
+    #   previous_cancellations <dbl>, previous_bookings_not_canceled <dbl>, reserved_room_type <chr>,
+    #   assigned_room_type <chr>, booking_changes <dbl>, deposit_type <chr>, agent <chr>, company <chr>,
+    #   days_in_waiting_list <dbl>, customer_type <chr>, adr <dbl>, required_car_parking_spaces <dbl>,
+    #   total_of_special_requests <dbl>, reservation_status <chr>, reservation_status_date <date>
 
 ### Set up and import
 
