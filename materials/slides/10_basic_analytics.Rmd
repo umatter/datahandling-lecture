@@ -1,0 +1,418 @@
+---
+title: 'Data Handling: Import, Cleaning and Visualisation'
+subtitle: 'Lecture 10:<br>Basic Data Analysis with R'
+author: "Prof. Dr. Ulrich Matter"
+output:   
+  ioslides_presentation:
+    css: ../../style/ioslides.css
+    template: ../../style/nologo_template.html
+    mathjax: "default"
+logo: ../../img/logo.png
+bibliography: ../../references/datahandling.bib
+---
+
+
+
+```{r set-options, echo=FALSE, cache=FALSE, warning=FALSE}
+options(width = 100)
+library(knitr)
+```
+
+
+<style>
+pre {
+  font-size: 21px;
+}
+</style>
+
+
+# Updates
+
+## Reminder
+
+- Send questions for the Q&A session (last lecture)
+- *ulrich.matter@unisg.ch*
+
+
+
+
+# Recap: Data Preparation
+
+---
+
+```{r pipeline, echo=FALSE, out.width = "85%", fig.align='center',  purl=FALSE}
+include_graphics("../../img/data_science_pipeline.png")
+```
+
+
+
+## Data preparation/data cleaning
+
+- *Goal* of data preparation: Dataset is ready for analysis.
+- *Key conditions*:
+  1. Data values are consistent/clean within each variable.
+  2. Variables are of proper data types.
+  3. Dataset is in 'tidy' (in long format)!
+  
+
+
+
+
+# Data Analysis with R
+
+## Merging (Joining) datasets
+
+- Combine data of two datasets in one dataset.
+- Needed: Unique identifiers for observations ('keys').
+
+
+## Merging (joining) datasets: concept
+
+
+```{r setupjoin, echo=FALSE, out.width = "60%", fig.align='center', fig.cap= 'Join setup. Source: @wickham_grolemund2017, licensed under the [Creative Commons Attribution-Share Alike 3.0 United States](https://creativecommons.org/licenses/by-nc-nd/3.0/us/) license.', purl=FALSE}
+include_graphics("../../img/join-setup.png")
+```
+
+
+## Merging (joining) datasets: concept
+
+
+```{r setupjoin2, echo=FALSE, out.width = "70%", fig.align='center', fig.cap= 'Join setup. Source: @wickham_grolemund2017, licensed under the [Creative Commons Attribution-Share Alike 3.0 United States](https://creativecommons.org/licenses/by-nc-nd/3.0/us/) license.', purl=FALSE}
+include_graphics("../../img/join-setup2.png")
+```
+
+
+
+
+## Merging (joining) datasets: concept
+
+*Merge: Inner join*
+
+<br>
+
+
+```{r innerjoin, echo=FALSE, out.width = "90%", fig.align='center', fig.cap= 'Inner join. Source: @wickham_grolemund2017, licensed under the [Creative Commons Attribution-Share Alike 3.0 United States](https://creativecommons.org/licenses/by-nc-nd/3.0/us/) license.', purl=FALSE}
+include_graphics("../../img/join-inner.png")
+```
+
+
+## Merging (joining) datasets: concept
+
+*Merge all x: Left join*
+
+<br>
+
+```{r leftjoin, echo=FALSE, out.width = "90%", fig.align='center', fig.cap= 'Outer join. Source: @wickham_grolemund2017, licensed under the [Creative Commons Attribution-Share Alike 3.0 United States](https://creativecommons.org/licenses/by-nc-nd/3.0/us/) license.', purl=FALSE}
+include_graphics("../../img/join-left.png")
+```
+
+
+## Merging (joining) datasets: concept
+
+*Merge all y: Right join*
+
+<br>
+
+```{r rightjoin, echo=FALSE, out.width = "90%", fig.align='center', fig.cap= 'Outer join. Source: @wickham_grolemund2017, licensed under the [Creative Commons Attribution-Share Alike 3.0 United States](https://creativecommons.org/licenses/by-nc-nd/3.0/us/) license.', purl=FALSE}
+include_graphics("../../img/join-right.png")
+```
+
+
+## Merging (joining) datasets: concept
+
+*Merge all x and all y: Full join*
+
+<br>
+
+
+```{r fulljoin, echo=FALSE, out.width = "90%", fig.align='center', fig.cap= 'Outer join. Source: @wickham_grolemund2017, licensed under the [Creative Commons Attribution-Share Alike 3.0 United States](https://creativecommons.org/licenses/by-nc-nd/3.0/us/) license.', purl=FALSE}
+include_graphics("../../img/join-full.png")
+```
+
+
+
+## Merging (joining) datasets: concept
+
+
+```{r vennjoin, echo=FALSE, out.width = "90%", fig.align='center', fig.cap= 'Join Venn Diagramm. Source: @wickham_grolemund2017, licensed under the [Creative Commons Attribution-Share Alike 3.0 United States](https://creativecommons.org/licenses/by-nc-nd/3.0/us/) license.', purl=FALSE}
+include_graphics("../../img/join-venn.png")
+```
+
+
+
+## Merging (joining) datasets: example
+
+```{r message=FALSE}
+# load packages
+library(tidyverse)
+
+# initiate data frame on persons personal spending
+df_c <- data.frame(id = c(1:3,1:3),
+                   money_spent= c(1000, 2000, 6000, 1500, 3000, 5500),
+                   currency = c("CHF", "CHF", "USD", "EUR", "CHF", "USD"),
+                   year=c(2017,2017,2017,2018,2018,2018))
+df_c
+
+```
+
+
+## Merging (joining) datasets: example
+
+```{r message=FALSE}
+# initiate data frame on persons' characteristics
+df_p <- data.frame(id = 1:4,
+                   first_name = c("Anna", "Betty", "Claire", "Diane"),
+                   profession = c("Economist", "Data Scientist", "Data Scientist", "Economist"))
+df_p
+```
+
+## Merging (joining) datasets: example
+
+```{r}
+df_merged <- merge(df_p, df_c, by="id")
+df_merged
+```
+
+
+## Move to Nuvolos
+
+<center>
+![](../../img/nuvolos.png)
+</center>
+
+
+
+## Merging (joining) datasets: R
+
+Overview by @wickham_grolemund2017:
+
+dplyr (tidyverse)  | base::merge
+-------------------|-------------------------------------------
+`inner_join(x, y)` | `merge(x, y)`
+`left_join(x, y)`  | `merge(x, y, all.x = TRUE)`
+`right_join(x, y)` | `merge(x, y, all.y = TRUE)`,
+`full_join(x, y)`  | `merge(x, y, all.x = TRUE, all.y = TRUE)`
+
+
+
+# Selecting, Filtering, and Mutating
+
+## Data summaries
+
+- First step of analysis.
+- Get overview over dataset.
+- Show key aspects of data.
+  - Inform your own statistical analysis.
+  - Inform audience (helps understand advanced analytics parts)
+
+## Data summaries: first steps
+
+- *Quick overview*: `summary()`
+- *Cross-tabulation*: `table()`
+
+## Data summaries and preparatory steps
+
+- *Select* subset of variables (e.g., for comparisons).
+- *Filter* the dataset (some observations not needed in _this_ analysis).
+- *Mutate* the dataset: additional values needed
+
+## Select, filter, mutate in R (tidyverse)
+
+- `select()`
+- `filter()`
+- `mutate()`
+
+# Data Summaries: Aggregate Statistics
+
+## Descriptive/aggregate statistics
+
+- Overview of key characteristics of main variables used in analysis.
+- Key characteristics:
+  - mean
+  - standard deviation
+  - No. of observations
+  - etc.
+
+## Aggregate statistics in R
+
+1. Functions to compute statistics (e.g., `mean()`).
+2. Functions to *apply* the statistics function to one or several columns in a tidy dataset.
+  - Including all values in a column.
+  - By group (observation categories, e.g. by location, year, etc.)
+
+## Aggregate statistics in R
+
+- `summarise()` (in `tidyverse`)
+- `group_by()` (in `tidyverse`)
+- `sapply()`, `apply()`, `lapply()`, etc. (in `base`)
+
+
+
+
+## Move to Nuvolos
+
+<center>
+![](../../img/nuvolos.png)
+</center>
+
+
+
+
+# Data Analytics: a primer in linear regression/OLS
+
+## Some vocabulary and notation
+
+- *Dependent variable*: $y_i$.
+- *Explanatory variable*: $x_i$. 
+- "All the rest": $u_{i}$ (the *'residuals'* or the 'error term'). 
+
+$y_{i}= \alpha + \beta x_{i} + u_{i}$.
+
+## Causality?
+
+## OLS Example: data
+
+
+```{r eval=FALSE}
+# load the data
+data(swiss)
+# look at the description
+?swiss
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# load the data
+data(swiss)
+
+```
+
+## Research question
+
+- Do more years of schooling improve educational outcomes?
+- Approximate educational success with the variable `Education` and educational outcomes with the variable `Examination`.
+- Make use of the simple linear model to investigate whether more schooling improves educational outcomes (on average)?
+
+
+
+## Model specification
+
+$Examination_{i}= \alpha + \beta Education_{i}$,
+
+- Intuitive hypothesis: $\beta$ is positive, indicating that a higher share of draftees with more years of schooling results in a higher share of draftees who reach the highest examination mark.
+- *Problems*?
+
+
+
+## Model specification
+
+To formally acknowledge that other factors might also play a role, we extend our model with the term $u_{i}$. For the moment, we thus subsume all other potentially relevant factors in that term:
+
+$Examination_{i}= \alpha + \beta Education_{i} + u_{i}$.
+
+
+## Raw data
+
+
+```{r}
+plot(swiss$Education, swiss$Examination)
+```
+
+
+## Derivation and implementation of OLS estimator
+
+From the model equation we easily see that these 'differences' between the predicted and the actual values of $y$ are the remaining unexplained component $u$: 
+
+$y_{i}-\hat{\alpha}-\hat{\beta} x_i=u_i$.
+
+Hence, we want to minimize the *sum of squared residuals (SSR)*: $\sum{u_i^2}=\sum{(y_{i}-\hat{\alpha}-\hat{\beta} x_i)^2}$. Using calculus, we define the two first order conditions:
+
+$$\frac{\partial SSR}{\partial \hat{\alpha}}=\sum{-2(y_{i}-\hat{\alpha}-\hat{\beta} x_i)}=0$$
+
+$$\frac{\partial SSR}{\partial \hat{\beta}}=\sum{-2x_i(y_{i}-\hat{\alpha}-\hat{\beta} x_i)}=0$$
+
+
+## Derivation and implementation of OLS estimator
+
+The first condition is relatively easily solved by getting rid of the $-2$ and considering that  $\sum{y_i}=N\bar{y}$:
+$\hat{\alpha}=\bar{y}-\hat{\beta}\bar{x}$.
+
+
+## Derivation and implementation of OLS estimator
+
+By plugging the solution for $\hat{\alpha}$ into the first order condition regarding $\hat{\beta}$ and again considering that $\sum{y_i}=N\bar{y}$, we get the solution for the slope coefficient estimator:
+
+$\frac{\sum{x_{i}y_{i}}-N\bar{y}\bar{x}}{\sum{x_i^2}-N\bar{x}^2}$.
+
+
+## Implement OLS in R!
+
+
+```{r}
+
+# implement the simple OLS estimator
+# verify implementation with simulated data from above
+# my_ols(y,x) 
+# should be very close to alpha=30 and beta=0.9
+my_ols <- 
+  function(y,x) {
+    N <- length(y)
+    betahat <- (sum(y*x) - N*mean(x)*mean(y)) / (sum(x^2)-N*mean(x)^2)
+    alphahat <- mean(y)-betahat*mean(x)
+    
+    return(list(alpha=alphahat,beta=betahat))
+  }
+
+# estimate effect of Education on Examination
+estimates <- my_ols(swiss$Examination, swiss$Education)
+estimates
+```
+
+
+## Simple visualisation
+
+```{r}
+plot(swiss$Education, swiss$Examination)
+abline(estimates$alpha, estimates$beta, col="red")
+```
+
+
+
+## Regression toolbox in R
+
+
+```{r}
+estimates2 <- lm(Examination~Education, data=swiss)
+estimates2
+```
+With one additional line of code we can compute all the common statistics about the regression estimation:
+
+```{r}
+summary(estimates2)
+```
+
+
+
+
+
+# Q&A
+
+
+<style>
+slides > slide { overflow: scroll; }
+slides > slide:not(.nobackground):after {
+  content: '';
+}
+
+
+code {
+  color: white;
+}
+
+
+pre {
+  color: white;
+}
+</style>
+
+## References {.smaller}
+

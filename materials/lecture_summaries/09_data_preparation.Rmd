@@ -1,0 +1,286 @@
+---
+title: 'Data Handling: Import, Cleaning and Visualisation'
+subtitle: 'Lecture 9:<br>Data Preparation'
+author: "Prof. Dr. Ulrich Matter"
+output:
+  html_document:
+    highlight: tango
+    theme: cerulean
+    mathjax: "http://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML"
+  pdf_document:
+    pandoc_args:
+    - --filter
+    - ../../code/math.py
+header-includes:
+- \usepackage[T1]{fontenc}
+- \usepackage{hyperref}
+css: ../../style/notes_hsg.css
+bibliography: ../../references/datahandling.bib
+---
+
+```{r set-options, echo=FALSE, cache=FALSE, warning=FALSE}
+options(width = 100)
+library(knitr)
+```
+
+
+
+
+# The dataset is imported, now what?
+
+- In practice: still a long way to go.
+- Parsable, but messy data: Inconsistencies, data types, missing observations, wide format.
+- *Goal* of data preparation: Dataset is ready for analysis.
+- *Key conditions*:
+  1. Data values are consistent/clean within each variable.
+  2. Variables are of proper data types.
+  3. Dataset is in 'tidy' (in long format, more on this after the break)!
+
+# Important Concepts
+
+## Tidy data: some vocabulary
+
+Following @wickham_2014:
+
+- *Dataset*: Collection of *values* (numbers and strings).
+- Every value belongs to a *variable* and an *observation*.
+- *Variable*: Contains all values that measure the same underlying attribute across units.
+- *Observation*: Contains all values measured on the same unit (e.g., a person).
+
+
+## Tidy data
+
+```{r tidydata, echo=FALSE, out.width = "90%", fig.align='center', purl=FALSE, fig.cap="Tidy data. Source: @wickham_grolemund2017, licensed under the [Creative Commons Attribution-Share Alike 3.0 United States](https://creativecommons.org/licenses/by-nc-nd/3.0/us/) license."}
+include_graphics("../../img/tidy-1.png")
+```
+
+
+## Reshaping
+
+```{r widetolong, echo=FALSE, out.width = "40%", fig.align='center',  purl=FALSE}
+include_graphics("../../img/reshape2.png")
+```
+
+## Stack/row-bind
+
+```{r rowbinding, echo=FALSE, out.width = "40%", fig.align='center', purl=FALSE}
+include_graphics("../../img/rowbinding.png")
+```
+
+
+
+# Code Examples
+
+## Cleaning variables
+
+We first load this package as we rely on functions provided in the `tidyverse`.
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+Initiate a stylistic example of a "messy" data frame:
+
+```{r}
+messy_df <- data.frame(last_name = c("Wayne", "Trump", "Karl Marx"),
+                       first_name = c("John", "Melania", ""),
+                       gender = c("male", "female", "Man"),
+                       date = c("2018-11-15", "2018.11.01", "2018/11/02"),
+                       income = c("150,000", "250000", "10000"),
+                       stringsAsFactors = FALSE)
+```
+
+
+### Find/replace character strings, recode factor levels
+
+Recall that categorical variables are best stored as factors:
+
+```{r}
+messy_df$gender <- as.factor(messy_df$gender)
+messy_df$gender
+```
+
+R defined the factor variable such that an observation can be one of three categories ('levels'): `female`, `male`, or `Man`. The underlying data needs to be cleaned: 
+
+```{r}
+messy_df$gender[messy_df$gender == "Man"] <- "male"
+messy_df$gender
+```
+
+Use `fct_recode()` (provided in `tidyverse`), to update/recode the factor variable.
+
+```{r}
+messy_df$gender <- fct_recode(messy_df$gender, "male" = "Man")
+messy_df$gender
+```
+
+
+
+### Removing individual characters from a string
+
+The `income` column contains numbers, so let's try to set this column to type `integer`.
+
+```{r}
+as.integer(messy_df$income)
+```
+
+The value containing a comma `,` could not be coerced to an integer value. We need to clean it first by "removing" the comma from the underlying string (i.e., replace the part of the string `","` with nothing `""`).
+
+```{r}
+messy_df$income <- str_replace(messy_df$income, pattern = ",", replacement = "")
+```
+Now we can successfully set the column as type integer.
+
+```{r}
+messy_df$income <- as.integer(messy_df$income)
+```
+
+
+### Splitting strings
+
+From looking at the `last_name` and `first_name` columns of our messy dataset, it becomes clear that the last row is not accurately coded. To re-code these variables correctly, we can use the function `str_split()`. First, we split the strings at every occurrence of white space (`" "`). Setting the option `simplify=TRUE`, we get a matrix containing the individual sub-strings after the splitting.
+
+```{r}
+splitnames <- str_split(messy_df$last_name, pattern = " ", simplify = TRUE)
+splitnames
+```
+
+In a second step, we replace empty observations in the `first_name` column with the corresponding values in `splitnames`.
+
+```{r}
+problem_cases <- messy_df$first_name == ""
+messy_df$first_name[problem_cases] <- splitnames[problem_cases, 1]
+```
+
+Finally, we must correct the `last_name` column by replacing the respective values.
+
+```{r}
+messy_df$last_name[problem_cases] <- splitnames[problem_cases, 2]
+messy_df
+```
+
+
+### Parsing dates
+
+The `date`-column uses no unique standard for dates. We can use the `ymd()`-function provided in the `lubridate`-package to parse the column as `Date` type.
+
+```{r}
+library(lubridate)
+messy_df$date <- ymd(messy_df$date)
+```
+
+Note how this function automatically recognizes how different special characters have been used in different observations to separate years from months/days.
+
+Now, our dataset is cleaned up and ready to go.
+
+```{r}
+messy_df
+```
+
+```{r}
+str(messy_df)
+```
+
+
+# Reshaping datasets
+
+
+
+
+### Pivoting from 'wide to long' 
+
+
+To illustrate how *pivoting from wide to long* works in practice, consider the following example dataset (extending on the example above).
+
+
+```{r}
+wide_df <- data.frame(last_name = c("Wayne", "Trump", "Marx"),
+                       first_name = c("John", "Melania", "Karl"),
+                       gender = c("male", "female", "male"),
+                       income.2018 = c("150000", "250000", "10000"),
+                      income.2017 = c( "140000", "230000", "15000"),
+                      stringsAsFactors = FALSE)
+wide_df
+```
+
+To reshape this data frame from wide to long (regarding the `income`-variable), we can use `pivot_longer()` as follows.
+
+```{r}
+long_df <- pivot_longer(wide_df, c(income.2018, income.2017), 
+                        names_to = "year", 
+                        names_prefix ="income.",
+                        values_to = "income")
+long_df
+```
+
+### Pivoting from 'long to wide' ("spreading")
+
+
+```{r}
+weird_df <- data.frame(last_name = c("Wayne", "Trump", "Marx",
+                                     "Wayne", "Trump", "Marx",
+                                     "Wayne", "Trump", "Marx"),
+                       first_name = c("John", "Melania", "Karl",
+                                      "John", "Melania", "Karl",
+                                      "John", "Melania", "Karl"),
+                       gender = c("male", "female", "male",
+                                  "male", "female", "male",
+                                  "male", "female", "male"),
+                       value = c("150000", "250000", "10000",
+                                 "2000000", "5000000", "NA",
+                                 "50", "25", "NA"),
+                       variable = c("income", "income", "income",
+                                    "assets", "assets", "assets",
+                                    "age", "age", "age"),
+                       stringsAsFactors = FALSE)
+weird_df
+```
+
+We can call the function `pivot_wider()` with the two parameters `names` and `value` to transform the data frame from long to vide as follows.
+
+```{r}
+tidy_df <- pivot_wider(weird_df, names_from = "variable", values_from = "value")
+tidy_df
+```
+
+
+## Stacking/row-binding datasets
+
+
+Create three separate subsets that can be combined into one larger dataset (data frame/tibble).
+
+```{r}
+# initialize sample data
+subset1 <- data.frame(ID=c(1,2),
+                      X=c("a", "b"),
+                      Y=c(50,10))
+
+subset2 <- data.frame(ID=c(3,4),
+                      Z=c("M", "O"))
+
+subset3 <- data.frame(ID= c(5),
+                      X=c("c"),
+                      Z="P")
+```
+
+To stack the three subsets together, we call `bind_rows()` as follows (`dplyr` needs to be installed and loaded for this).
+
+```{r}
+
+# install if needed
+# install.packages("dplyr")
+
+# load packages
+library(dplyr)
+
+# stack data frames
+combined_df <- bind_rows(subset1, subset2, subset3)
+
+# inspect the result
+combined_df
+```
+
+Note how `bind_rows()` automatically matches the column names (orders the columns before stacking), and fills missing values with `NA`s (not available). 
+
+# References
+
